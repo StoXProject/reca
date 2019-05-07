@@ -1,0 +1,18 @@
+language: c
+
+matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          packages:
+            - liblapack-dev
+            - libblas-dev
+            - gfortran
+    - os: osx
+
+before_script:
+ - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./buildf2c_osx.sh; fi
+
+script:
+ - ./download.sh && ./build.sh
