@@ -5,7 +5,7 @@
 #include <R.h>
 #include <Rdefines.h>
 #include "caa.h"
-#include "caa_Rextensions.h"
+//#include "caa_Rextensions.h"
 #include "caa_read_write.h"
 #include "caa_routines.h"
 
