@@ -13,7 +13,7 @@
 
 #include "taucs.h"
 
-#ifdef OSTYPE_win32
+#if defined(OSTYPE_win32) || defined(__MINGW32__)
 #include <io.h> /*_telli64, _lseeki64*/
 #else
 #include <unistd.h>
@@ -41,7 +41,7 @@ taucs_ccs_read_binary(char* filename)
 
   taucs_printf("taucs_ccs_binary: reading binary matrix %s\n",filename);
   
-#ifdef OSTYPE_win32
+#if defined(OSTYPE_win32) || defined(__MINGW32__)
   f = open(filename,_O_RDONLY |_O_BINARY);
 #else
   f = open(filename,O_RDONLY);
@@ -974,7 +974,7 @@ taucs_vec_read_binary(int n, int flags, char* filename)
 
   taucs_printf("taucs_vec_read_binary: reading binary vector %s\n",filename);
   
-#ifdef OSTYPE_win32
+#if defined(OSTYPE_win32) || defined(__MINGW32__)
   f = open(filename,_O_RDONLY |_O_BINARY);
 #else
   f = open(filename,O_RDONLY);
@@ -1017,7 +1017,7 @@ taucs_vec_write_binary(int n, int flags, void* v, char* filename)
 
   taucs_printf("taucs_vec_write_binary: writing binary vector %s\n",filename);
   
-#ifdef OSTYPE_win32
+#if defined(OSTYPE_win32) || defined(__MINGW32__)
   f = open(filename,
 	   _O_WRONLY | _O_CREAT | _O_BINARY, 
 	   _S_IREAD | _S_IWRITE | _S_IEXEC);
