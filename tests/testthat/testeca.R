@@ -90,6 +90,11 @@ runAllTests <- function(testfiles="./testfiles", tmpdir=tempdir()){
     write(t, stdout())
   }
   write("######", stdout())
+
+  if (length(failures) > 0)
+    return(FALSE)
+  else
+    return(TRUE)
 }
 # If not already done, clone https://github.com/Sea2Data/Rstox_utils.
 # Change directory to the folder "Work" in the local Rstox_utils (on Holmin's computer this is setwd("~/Code/Github/Rstox_utils/Rstox_utils/Work"))
@@ -101,5 +106,8 @@ test_that("Preliminary test", {
   expect_equal(runTest("herring_2015_tempfixed_gearrandom_100samples.Rdata"), TRUE)
 })
 
-# Run the full test, which takes half an hour:
-#runAllTests()
+# Run all tests
+#test_that("Run standard tests", {
+#  expect_equal(runAllTests(), TRUE)
+#})
+
