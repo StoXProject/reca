@@ -83,6 +83,7 @@ distclean:
 	- $(RM) bin
 	- $(RM) obj
 	- $(RM) build
+	- $(RM) makefile
 
 FILES = \
 	config$(PATHSEP)*.mk \
