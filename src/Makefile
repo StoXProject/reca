@@ -151,7 +151,7 @@ $(LIBLAPACK):
 	$(MAKE) -C $(LIBLAPACKDIR) lapacklib blaslib
 
 $(LIBMETIS):
-	CC=$(CC) $(MAKE) -C $(LIBMETISDIR)
+	CC=$(CC) $(MAKE) -C $(LIBMETISDIR) lib
 
 $(F2C):
 	$(MAKE) -C $(LIBF2CDIR)

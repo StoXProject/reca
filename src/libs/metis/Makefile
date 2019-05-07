@@ -5,6 +5,9 @@ default:
 	(cd Programs ; make ) 
 	(cd Test ; make ) 
 
+lib:
+	(cd Lib ; make )
+
 clean:
 	(cd Lib ; make clean )
 	(cd Programs ; make clean )
