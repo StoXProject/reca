@@ -22,7 +22,6 @@ else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
 		OSTYPE = linux
-		OPENBLASFLAG = "DYNAMIC_ARCH=1"
 	endif
 	ifeq ($(UNAME_S),Darwin)
 		OSTYPE = darwin_intel
@@ -134,7 +133,7 @@ $(LIBTAUCS): $(LIBOPENBLAS) $(LIBMETIS)
 	$(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK= LIBBLAS="../../$(LIBOPENBLAS) -lpthread" LIBMETIS=../../$(LIBMETIS)
 
 $(LIBOPENBLAS):
-	$(MAKE) -C $(LIBOPENBLASDIR) libs $(OPENBLASFLAG) NO_SHARED=1
+	$(MAKE) -C $(LIBOPENBLASDIR) libs netlib DYNAMIC_ARCH=1 NO_SHARED=1
 
 caa_main_model1.o: caa.h caa_read_binary.h caa_estimate.h caa_main_model1.c
 caa_main_model2.o: caa.h caa_read_binary.h caa_estimate.h caa_main_model2.c
