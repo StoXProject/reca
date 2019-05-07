@@ -14,11 +14,11 @@ LD     = $(CC)
 FC     = gfortran
 LD     = gfortran -static-libgcc
 
-# OS detection (Windows is considered Linux since we use Mingw)
-
+# F2C lib for OSX
 F2C =
 
-OSTYPE :=
+# OS detection (Windows is considered Linux since we use Mingw)
+OSTYPE = linux
 ifeq ($(OS),Windows_NT)
 	OSTYPE = linux
 else
@@ -159,7 +159,7 @@ $(F2C):
 $(LIBTAUCS): $(LIBLAPACK) $(LIBBLAS) $(LIBMETIS) $(F2C)
 	CC=$(CC) $(MAKE) -C $(LIBTAUCSDIR) -f configurator/makefile.unix
 	cd $(LIBTAUCSDIR); OSTYPE=$(OSTYPE) configurator/configurator
-	CC=$(CC) $(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK=../../$(LIBLAPACK) LIBBLAS="../../$(LIBBLAS) -lpthread" LIBMETIS=../../$(LIBMETIS) LIBF77=$(F2C)
+	CC=gfortran $(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK=../../$(LIBLAPACK) LIBBLAS=../../$(LIBBLAS) LIBMETIS=../../$(LIBMETIS) LIBF77="$(F2C)"
 
 #$(LIBOPENBLAS):
 #	$(MAKE) -C $(LIBOPENBLASDIR) libs $(OPENBLASFLAG) NO_SHARED=1
