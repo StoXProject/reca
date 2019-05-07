@@ -6,13 +6,13 @@ DEBUG_CFLAGS =
 #CFLAGS = $(DEBUG_CFLAGS) -g -pg -O0 $(INCLUDE) -L. 
 CFLAGS = $(DEBUG_CFLAGS) -g -O2 $(INCLUDE) 
 
-LIB    = -ltaucs -lmetis -llapack -lblas -lpthread -lm
+LIB    = -lpthread -lm
 #LFLAGS = -L/usr/lib -L../libs -L/usr/lib/atlas-base/atlas -L/usr/lib/atlas-base
-LFLAGS = $(LTAUCS_LOC) $(LMETIS_LOC)
+LFLAGS = $(LIBTAUCS) $(LIBOPENBLAS) $(LIBMETIS)
 BIN    = .
 LD     = $(CC)
 FC     = gfortran
-LD     = gfortran -static
+LD     = gfortran -static-libgcc
 
 # OS detection (Windows is considered Linux since we use Mingw)
 OSTYPE :=
@@ -22,6 +22,7 @@ else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
 		OSTYPE = linux
+		OPENBLASFLAG = "DYNAMIC_ARCH=1"
 	endif
 	ifeq ($(UNAME_S),Darwin)
 		OSTYPE = darwin_intel
@@ -29,10 +30,14 @@ else
 endif
 
 # Required static libs
-LIBLAPACK =
-LIBTAUCS =
-LIBBLAS =
-LIBMETIS =
+LIBOPENBLASDIR = libs/openblas
+LIBOPENBLAS = $(LIBOPENBLASDIR)/libopenblas.a 
+
+LIBTAUCSDIR = libs/taucs
+LIBTAUCS = $(LIBTAUCSDIR)/lib/$(OSTYPE)/libtaucs.a
+
+LIBMETISDIR = libs/metis
+LIBMETIS = $(LIBMETISDIR)/libmetis.a
 
 TEST   = test.o 
 
@@ -106,18 +111,30 @@ OBJ  =  caa_predict.o \
 
 #.c.o : $(CC) -c $(CFLAGS) $<
 
+.PHONY : caa clean cleanall
 
 caa: caa_main_model1 caa_main_model2 caa_main_predict
 
-caa_main_model1:	$(OBJ1) $(OBJ)
+caa_main_model1:        $(OBJ1) $(OBJ) $(LIBTAUCS)
 	$(LD) $(CFLAGS)  $(OBJ1) $(OBJ) -o $(BIN)/caa_main_model1 $(LFLAGS) $(LIB)
 
-caa_main_model2:	$(OBJ2) $(OBJ)
+caa_main_model2:        $(OBJ2) $(OBJ) $(LIBTAUCS)
 	$(LD) $(CFLAGS)  $(OBJ2) $(OBJ) -o $(BIN)/caa_main_model2 $(LFLAGS) $(LIB)
 
-caa_main_predict:	$(OBJ3) $(OBJ)
+caa_main_predict:       $(OBJ3) $(OBJ) $(LIBTAUCS)
 	$(LD) $(CFLAGS)  $(OBJ3) $(OBJ) -o $(BIN)/caa_main_predict $(LFLAGS) $(LIB)
 #	$(LD) $(CFLAGS)   $(OBJ) -o $(BIN)/predict $(LFLAGS) $(LIB)
+
+$(LIBMETIS):
+	$(MAKE) -C $(LIBMETISDIR)
+
+$(LIBTAUCS): $(LIBOPENBLAS) $(LIBMETIS)
+	$(MAKE) -C $(LIBTAUCSDIR) -f configurator/makefile.unix
+	cd $(LIBTAUCSDIR); OSTYPE=$(OSTYPE) ./configure
+	$(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK= LIBBLAS="../../$(LIBOPENBLAS) -lpthread" LIBMETIS=../../$(LIBMETIS)
+
+$(LIBOPENBLAS):
+	$(MAKE) -C $(LIBOPENBLASDIR) libs $(OPENBLASFLAG) NO_SHARED=1
 
 caa_main_model1.o: caa.h caa_read_binary.h caa_estimate.h caa_main_model1.c
 caa_main_model2.o: caa.h caa_read_binary.h caa_estimate.h caa_main_model2.c
@@ -185,4 +202,11 @@ install: $(caa)
 	install $(BIN)/caa_main_model1 $(BIN)/caa_main_model2 $(BIN)/caa_main_predict ../inst/bin/
 
 clean:
-	rm -f *.o 
+	rm -f *.o
+	rm -f caa_main_model1 caa_main_model2 caa_main_predict
+
+cleanall: clean
+	$(MAKE) -C $(LIBTAUCSDIR) clean
+	$(MAKE) -C $(LIBTAUCSDIR) distclean
+	$(MAKE) -C $(LIBMETISDIR) realclean
+	$(MAKE) -C $(LIBOPENBLASDIR) clean
