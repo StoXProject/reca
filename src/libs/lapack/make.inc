@@ -4,7 +4,7 @@
 #  November 2017                                                   #
 ####################################################################
 
-SHELL = /bin/sh
+#SHELL = /bin/sh
 
 #  CC is the C compiler, normally invoked with options CFLAGS.
 #
