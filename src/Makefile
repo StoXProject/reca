@@ -151,15 +151,15 @@ $(LIBLAPACK):
 	$(MAKE) -C $(LIBLAPACKDIR) lapacklib blaslib
 
 $(LIBMETIS):
-	$(MAKE) -C $(LIBMETISDIR)
+	CC=$(CC) $(MAKE) -C $(LIBMETISDIR)
 
 $(F2C):
 	$(MAKE) -C $(LIBF2CDIR) libf2c.a
 
 $(LIBTAUCS): $(LIBLAPACK) $(LIBBLAS) $(LIBMETIS) $(F2C)
-	$(MAKE) -C $(LIBTAUCSDIR) -f configurator/makefile.unix
+	CC=$(CC) $(MAKE) -C $(LIBTAUCSDIR) -f configurator/makefile.unix
 	cd $(LIBTAUCSDIR); OSTYPE=$(OSTYPE) configurator/configurator
-	$(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK=../../$(LIBLAPACK) LIBBLAS="../../$(LIBBLAS) -lpthread" LIBMETIS=../../$(LIBMETIS) LIBF77=$(F2C)
+	CC=$(CC) $(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK=../../$(LIBLAPACK) LIBBLAS="../../$(LIBBLAS) -lpthread" LIBMETIS=../../$(LIBMETIS) LIBF77=$(F2C)
 
 #$(LIBOPENBLAS):
 #	$(MAKE) -C $(LIBOPENBLASDIR) libs $(OPENBLASFLAG) NO_SHARED=1
