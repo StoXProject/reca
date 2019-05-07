@@ -8,7 +8,7 @@ CFLAGS = $(DEBUG_CFLAGS) -g -O2 $(INCLUDE)
 
 LIB    = -lpthread -lm
 #LFLAGS = -L/usr/lib -L../libs -L/usr/lib/atlas-base/atlas -L/usr/lib/atlas-base
-LFLAGS = $(LIBTAUCS) $(LIBOPENBLAS) $(LIBMETIS)
+LFLAGS = $(LIBTAUCS) $(LIBMETIS) $(LIBLAPACK) $(LIBBLAS)
 BIN    = .
 LD     = $(CC)
 FC     = gfortran
@@ -28,15 +28,27 @@ else
 	endif
 endif
 
+# Whether to build universal openblas
+#OPENBLASFLAG :=
+#ifeq ($(UNIVERSAL_BLAS), 1)
+#        OPENBLASFLAG = "DYNAMIC_ARCH=1"
+#endif
+
+
 # Required static libs
-LIBOPENBLASDIR = libs/openblas
-LIBOPENBLAS = $(LIBOPENBLASDIR)/libopenblas.a 
+#LIBOPENBLASDIR = libs/openblas
+#LIBOPENBLAS = $(LIBOPENBLASDIR)/libopenblas.a 
+
+LIBBLAS = $(LIBLAPACKDIR)/librefblas.a
 
 LIBTAUCSDIR = libs/taucs
 LIBTAUCS = $(LIBTAUCSDIR)/lib/$(OSTYPE)/libtaucs.a
 
 LIBMETISDIR = libs/metis
 LIBMETIS = $(LIBMETISDIR)/libmetis.a
+
+LIBLAPACKDIR = libs/lapack
+LIBLAPACK = $(LIBLAPACKDIR)/liblapack.a
 
 TEST   = test.o 
 
@@ -110,7 +122,9 @@ OBJ  =  caa_predict.o \
 
 #.c.o : $(CC) -c $(CFLAGS) $<
 
-.PHONY : caa clean cleanall
+.PHONY : all caa clean cleanall
+
+all: caa install
 
 caa: caa_main_model1 caa_main_model2 caa_main_predict
 
@@ -124,16 +138,21 @@ caa_main_predict:       $(OBJ3) $(OBJ) $(LIBTAUCS)
 	$(LD) $(CFLAGS)  $(OBJ3) $(OBJ) -o $(BIN)/caa_main_predict $(LFLAGS) $(LIB)
 #	$(LD) $(CFLAGS)   $(OBJ) -o $(BIN)/predict $(LFLAGS) $(LIB)
 
+$(LIBBLAS): $(LIBLAPACK)
+
+$(LIBLAPACK):
+	$(MAKE) -C $(LIBLAPACKDIR) lapacklib blaslib
+
 $(LIBMETIS):
 	$(MAKE) -C $(LIBMETISDIR)
 
-$(LIBTAUCS): $(LIBOPENBLAS) $(LIBMETIS)
+$(LIBTAUCS): $(LIBLAPACK) $(LIBBLAS) $(LIBMETIS)
 	$(MAKE) -C $(LIBTAUCSDIR) -f configurator/makefile.unix
 	cd $(LIBTAUCSDIR); OSTYPE=$(OSTYPE) ./configure
-	$(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK= LIBBLAS="../../$(LIBOPENBLAS) -lpthread" LIBMETIS=../../$(LIBMETIS)
+	$(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK=../../$(LIBLAPACK) LIBBLAS="../../$(LIBBLAS) -lpthread" LIBMETIS=../../$(LIBMETIS)
 
-$(LIBOPENBLAS):
-	$(MAKE) -C $(LIBOPENBLASDIR) libs netlib DYNAMIC_ARCH=1 NO_SHARED=1
+#$(LIBOPENBLAS):
+#	$(MAKE) -C $(LIBOPENBLASDIR) libs $(OPENBLASFLAG) NO_SHARED=1
 
 caa_main_model1.o: caa.h caa_read_binary.h caa_estimate.h caa_main_model1.c
 caa_main_model2.o: caa.h caa_read_binary.h caa_estimate.h caa_main_model2.c
@@ -208,4 +227,5 @@ cleanall: clean
 	$(MAKE) -C $(LIBTAUCSDIR) clean
 	$(MAKE) -C $(LIBTAUCSDIR) distclean
 	$(MAKE) -C $(LIBMETISDIR) realclean
-	$(MAKE) -C $(LIBOPENBLASDIR) clean
+#	$(MAKE) -C $(LIBOPENBLASDIR) clean
+	$(MAKE) -C $(LIBLAPACKDIR) clean
