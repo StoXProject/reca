@@ -15,6 +15,9 @@ FC     = gfortran
 LD     = gfortran -static-libgcc
 
 # OS detection (Windows is considered Linux since we use Mingw)
+
+F2C =
+
 OSTYPE :=
 ifeq ($(OS),Windows_NT)
 	OSTYPE = linux
@@ -25,6 +28,7 @@ else
 	endif
 	ifeq ($(UNAME_S),Darwin)
 		OSTYPE = darwin_intel
+		F2C = $(LIBF2C)
 	endif
 endif
 
@@ -38,6 +42,9 @@ endif
 # Required static libs
 #LIBOPENBLASDIR = libs/openblas
 #LIBOPENBLAS = $(LIBOPENBLASDIR)/libopenblas.a 
+
+LIBF2CDIR = libs/f2c
+LIBF2C = $(LIBF2CDIR)/libf2c.a
 
 LIBBLAS = $(LIBLAPACKDIR)/librefblas.a
 
@@ -146,10 +153,13 @@ $(LIBLAPACK):
 $(LIBMETIS):
 	$(MAKE) -C $(LIBMETISDIR)
 
-$(LIBTAUCS): $(LIBLAPACK) $(LIBBLAS) $(LIBMETIS)
+$(LIBF2C):
+	$(MAKE) -C $(LIBF2CDIR) libf2c.a
+
+$(LIBTAUCS): $(LIBLAPACK) $(LIBBLAS) $(LIBMETIS) $(F2C)
 	$(MAKE) -C $(LIBTAUCSDIR) -f configurator/makefile.unix
 	cd $(LIBTAUCSDIR); OSTYPE=$(OSTYPE) configurator/configurator
-	$(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK=../../$(LIBLAPACK) LIBBLAS="../../$(LIBBLAS) -lpthread" LIBMETIS=../../$(LIBMETIS)
+	$(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK=../../$(LIBLAPACK) LIBBLAS="../../$(LIBBLAS) -lpthread" LIBMETIS=../../$(LIBMETIS) LIBF77=../../$(F2C)
 
 #$(LIBOPENBLAS):
 #	$(MAKE) -C $(LIBOPENBLASDIR) libs $(OPENBLASFLAG) NO_SHARED=1
@@ -229,3 +239,4 @@ cleanall: clean
 	$(MAKE) -C $(LIBMETISDIR) realclean
 #	$(MAKE) -C $(LIBOPENBLASDIR) clean
 	$(MAKE) -C $(LIBLAPACKDIR) clean
+	$(MAKE) -C $(LIBF2CDIR) clean
