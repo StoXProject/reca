@@ -28,7 +28,7 @@ else
 	endif
 	ifeq ($(UNAME_S),Darwin)
 		OSTYPE = darwin_intel
-		F2C = $(LIBF2C)
+		F2C = ../../$(LIBF2C)
 	endif
 endif
 
@@ -153,13 +153,13 @@ $(LIBLAPACK):
 $(LIBMETIS):
 	$(MAKE) -C $(LIBMETISDIR)
 
-$(LIBF2C):
+$(F2C):
 	$(MAKE) -C $(LIBF2CDIR) libf2c.a
 
 $(LIBTAUCS): $(LIBLAPACK) $(LIBBLAS) $(LIBMETIS) $(F2C)
 	$(MAKE) -C $(LIBTAUCSDIR) -f configurator/makefile.unix
 	cd $(LIBTAUCSDIR); OSTYPE=$(OSTYPE) configurator/configurator
-	$(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK=../../$(LIBLAPACK) LIBBLAS="../../$(LIBBLAS) -lpthread" LIBMETIS=../../$(LIBMETIS) LIBF77=../../$(F2C)
+	$(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK=../../$(LIBLAPACK) LIBBLAS="../../$(LIBBLAS) -lpthread" LIBMETIS=../../$(LIBMETIS) LIBF77=$(F2C)
 
 #$(LIBOPENBLAS):
 #	$(MAKE) -C $(LIBOPENBLASDIR) libs $(OPENBLASFLAG) NO_SHARED=1
