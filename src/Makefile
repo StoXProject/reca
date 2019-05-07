@@ -148,7 +148,7 @@ $(LIBMETIS):
 
 $(LIBTAUCS): $(LIBLAPACK) $(LIBBLAS) $(LIBMETIS)
 	$(MAKE) -C $(LIBTAUCSDIR) -f configurator/makefile.unix
-	cd $(LIBTAUCSDIR); OSTYPE=$(OSTYPE) ./configure
+	cd $(LIBTAUCSDIR); OSTYPE=$(OSTYPE) configurator/configurator
 	$(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK=../../$(LIBLAPACK) LIBBLAS="../../$(LIBBLAS) -lpthread" LIBMETIS=../../$(LIBMETIS)
 
 #$(LIBOPENBLAS):
