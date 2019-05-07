@@ -1,0 +1,3 @@
+CC := $(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CC)
+
+include Makefile
