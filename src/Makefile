@@ -154,7 +154,7 @@ $(LIBMETIS):
 	CC=$(CC) $(MAKE) -C $(LIBMETISDIR)
 
 $(F2C):
-	$(MAKE) -C $(LIBF2CDIR) libf2c.a
+	$(MAKE) -C $(LIBF2CDIR)
 
 $(LIBTAUCS): $(LIBLAPACK) $(LIBBLAS) $(LIBMETIS) $(F2C)
 	CC=$(CC) $(MAKE) -C $(LIBTAUCSDIR) -f configurator/makefile.unix
