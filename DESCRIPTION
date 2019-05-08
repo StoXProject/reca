@@ -9,3 +9,4 @@ Description: Performs catch at age analysis using MCMC
 License: GPL2
 RoxygenNote: 6.1.1
 Suggests: testthat
+SystemRequirements: GNU make
