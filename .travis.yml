@@ -19,3 +19,39 @@ sudo: false
 cache: packages
 
 warnings_are_errors: false
+
+if: tag IS blank
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then R -e 'source("https://install-github.me/r-lib/remotes")'; fi
+after_success:
+  # Get Package name and version from DESCRIPTION
+  - 'export PKGVER=$(sed -n "s/Version: *\([^ ]*\)/\1/p" DESCRIPTION)'
+  - 'export PKGNAME=$(sed -n "s/Package: *\([^ ]*\)/\1/p" DESCRIPTION)'
+  - 'export SRC_PKG_FILE=${PKGNAME}_${PKGVER}'
+  - "echo $SRC_PKG_FILE"
+  # Build binary and remove the source archive
+  - "R CMD INSTALL --build ${SRC_PKG_FILE}.tar.gz"
+  - "rm ${SRC_PKG_FILE}.tar.gz"
+  # Look for binary bundle (*.tgz for OSX and *.tar.gz for Linux)
+  - "export BIN_PKG_FILE=$(ls $PKGNAME*gz)"
+  - "echo Resulting binary: $BIN_PKG_FILE"
+before_deploy:
+  # Set up git user name and tag this commit
+  - git config --global user.email "builds@travis-ci.com"
+  - git config --global user.name "Travis CI"
+  - export TRAVIS_TAG=$PKGNAME-v$PKGVER
+  - if git tag $TRAVIS_TAG > /dev/null 2>&1; then echo Successfully tagged; else echo Tag already exists; fi
+
+deploy:
+  provider: releases
+  api_key:
+    secure: $TOKEN
+  file: $BIN_PKG_FILE
+  skip_cleanup: true
+  on:
+    branch: master
