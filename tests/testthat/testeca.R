@@ -107,7 +107,7 @@ test_that("Preliminary test", {
 })
 
 # Run all tests
-#test_that("Run standard tests", {
-#  expect_equal(runAllTests(), TRUE)
-#})
+test_that("Run standard tests", {
+  expect_equal(runAllTests(), TRUE)
+})
 
