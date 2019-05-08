@@ -6,6 +6,10 @@ image:
 platform:
   - x64
 
+# Use R 3.5.0 for compatibility
+environment:
+  R_VERSION: 3.5.0
+
 # Download script file from GitHub
 init:
   ps: |

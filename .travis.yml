@@ -5,11 +5,13 @@ language: R
 matrix:
   include:
     - os: linux
+      r: 3.5.0
       addons:
         apt:
           packages:
             - gfortran
     - os: osx
+      r: 3.5.0
       addons:
         homebrew:
           packages:
