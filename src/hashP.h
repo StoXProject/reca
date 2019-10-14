@@ -43,7 +43,9 @@
 
 #if !defined(__FreeBSD__)
 #include <string.h>
-
+#if !defined(__MACH__)
+#include <malloc.h>
+#endif
 #endif
 #include <stdlib.h>
 #include <stddef.h>

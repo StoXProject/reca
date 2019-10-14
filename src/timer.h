@@ -37,8 +37,8 @@
 #define __GMRFLib_TIMER_H__
 #include <time.h>
 #include <stdlib.h>
-#if !defined(__FreeBSD__)
-
+#if !defined(__FreeBSD__) && !defined(__MACH__)
+#include <malloc.h>
 #endif
 
 #undef __BEGIN_DECLS

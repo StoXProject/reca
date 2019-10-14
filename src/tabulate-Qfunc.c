@@ -65,8 +65,8 @@
 */
 
 #include <stdio.h>
-#if !defined(__FreeBSD__)
-
+#if !defined(__FreeBSD__) && !defined(__MACH__)
+#include <malloc.h>
 #endif
 #include <stdlib.h>
 

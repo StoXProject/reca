@@ -151,13 +151,13 @@ $(LIBLAPACK):
 	$(MAKE) -C $(LIBLAPACKDIR) lapacklib blaslib
 
 $(LIBMETIS):
-	CC=$(CC) $(MAKE) -C $(LIBMETISDIR)/Lib
+	CC="$(CC)" $(MAKE) -C $(LIBMETISDIR)/Lib
 
 $(F2C):
 	$(MAKE) -C $(LIBF2CDIR)
 
 $(LIBTAUCS): $(LIBLAPACK) $(LIBBLAS) $(LIBMETIS) $(F2C)
-	CC=$(CC) $(MAKE) -C $(LIBTAUCSDIR) -f configurator/makefile.unix
+	CC="$(CC)" $(MAKE) -C $(LIBTAUCSDIR) -f configurator/makefile.unix
 	cd $(LIBTAUCSDIR); OSTYPE=$(OSTYPE) configurator/configurator
 	CC=gfortran $(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK=../../$(LIBLAPACK) LIBBLAS=../../$(LIBBLAS) LIBMETIS=../../$(LIBMETIS) LIBF77="$(F2C)"
 

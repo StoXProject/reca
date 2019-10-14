@@ -9,7 +9,8 @@
 #' AgeLength
 #' \itemize{
 #'  \item DataMatrix  - matrix with one row for each fish and columns \emph{age} (age in whole years), \emph{part.year} 
-#'  (fraction of year, i.e. realage=age+part.year), \emph{lengthCM} (length in centimeters), \emph{samplingID} (id for 
+#'  (fraction of year, >0 and <=1, i.e. realage=age+part.year, e.g. for seasonal sampling part.year=0.25 for season 1 etc, 
+#'  for daily sampling part.year=1/365 for day 1 etc), \emph{lengthCM} (length in centimeters), \emph{samplingID} (id for 
 #'  sampling unit, e.g. haul number, numbered from 1 to number of sampling units), \emph{partnumber}, \emph{partcount}, 
 #'  \emph{otolithtype} (classification when multiple stocks (type1 (Coastal cod) and type2 (Atlantic cod)): 
 #'  1-certain type1, 2-uncertain type1, 4-uncertain type2, 5-certain type2).
@@ -68,7 +69,9 @@
 #'  as "non-linear" in which case the Schnute-Richards model will be used
 #'  \item CC - TRUE if coastal cod is included in the model, FALSE otherwise
 #'  \item CCerror - TRUE if classification error is included in coastal cod model, FALSE otherwise
-#'  \item seed - random seed value
+#'  \item seed - random seed value that initializes the random number generator. If NULL, a random number is generated for 
+#'  this value. Otherwise, if the same seed is used and the other input values are the same, the results will be the same in 
+#'  different simulations.
 #'  }
 #' @return A list with elements
 #' \item{ProportionAtAge: }{a list with \strong{Intercept} and \strong{LogLikelihood} for the age model 
@@ -116,6 +119,9 @@ eca.estimate <- function(AgeLength,WeightLength,Landings,GlobalParameters)
   stoxdata<-list(AgeLength=AgeLength,WeightLength=WeightLength,
                  Landings=Landings,GlobalParameters=GlobalParameters)
 
+  if(is.null(GlobalParameters$seed)){
+    GlobalParameters$seed <- sample(1:9999,1) #Generate a positive number
+  }
   if(is.null(GlobalParameters$delta.age)){
     GlobalParameters$delta.age <- 0.001
   }
@@ -167,7 +173,9 @@ eca.estimate <- function(AgeLength,WeightLength,Landings,GlobalParameters)
                lgamodel=GlobalParameters$lgamodel,
                delta.age=GlobalParameters$delta.age,
                sim.ar=T,usedebug=F,print.boat=T,
-               save.age=F,save.lga=F,save.wgl=F,inc.haulsize=F)
+               save.age=F,save.lga=F,save.wgl=F,inc.haulsize=F,
+               print.format=GlobalParameters$print.format,
+               old.version=GlobalParameters$old.version)
 
   run.fit(stoxdata,common,win)
   stoxdata<<-stoxdata

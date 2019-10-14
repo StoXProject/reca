@@ -36,8 +36,8 @@
 static const char RCSId[] = "$Id: hash.c 1 2013-03-28 13:54:24Z hanne $";
 
 #include <string.h>
-#if !defined(__FreeBSD__)
-
+#if !defined(__FreeBSD__) && !defined(__MACH__)
+#include <malloc.h>
 #endif
 #include <stdlib.h>
 #include <stdio.h>

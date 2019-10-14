@@ -54,8 +54,8 @@ __BEGIN_DECLS
 #include <math.h>
 #include <assert.h>
 #include <stddef.h>
-#if !defined(__FreeBSD__)
- 
+#if !defined(__FreeBSD__) && !defined(__MACH__)
+#include <malloc.h> 
 #endif
 #include <stdlib.h>
 #include <stdio.h>
