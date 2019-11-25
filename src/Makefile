@@ -144,7 +144,7 @@ caa_main_predict:       $(OBJ3) $(OBJ) $(LIBTAUCS)
 #	$(LD) $(CFLAGS)   $(OBJ) -o $(BIN)/predict $(LFLAGS) $(LIB)
 
 $(LIBBLAS):
-	$(MAKE) -C $(LIBBLASDIR) DYNAMIC_ARCH=1 NO_SHARED=1 FC=gfortran
+	$(MAKE) -C $(LIBBLASDIR) DYNAMIC_ARCH=1 NO_SHARED=1
 
 $(LIBMETIS):
 	CC="$(CC)" $(MAKE) -C $(LIBMETISDIR)/Lib
