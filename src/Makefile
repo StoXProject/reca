@@ -8,7 +8,7 @@ CFLAGS = $(DEBUG_CFLAGS) -g -O2 $(INCLUDE)
 
 LIB    = -lpthread -lm
 #LFLAGS = -L/usr/lib -L../libs -L/usr/lib/atlas-base/atlas -L/usr/lib/atlas-base
-LFLAGS = $(LIBTAUCS) $(LIBMETIS) $(LIBLAPACK) $(LIBBLAS)
+LFLAGS = $(LIBTAUCS) $(LIBMETIS) $(LIBBLAS)
 BIN    = .
 LD     = $(CC)
 FC     = gfortran
@@ -46,16 +46,14 @@ endif
 LIBF2CDIR = libs/f2c
 LIBF2C = $(LIBF2CDIR)/libf2c.a
 
-LIBBLAS = $(LIBLAPACKDIR)/librefblas.a
-
 LIBTAUCSDIR = libs/taucs
 LIBTAUCS = $(LIBTAUCSDIR)/lib/$(OSTYPE)/libtaucs.a
 
 LIBMETISDIR = libs/metis
 LIBMETIS = $(LIBMETISDIR)/libmetis.a
 
-LIBLAPACKDIR = libs/lapack
-LIBLAPACK = $(LIBLAPACKDIR)/liblapack.a
+LIBBLASDIR = libs/openblas
+LIBBLAS = $(LIBBLASDIR)/libopenblas.a
 
 TEST   = test.o 
 
@@ -145,10 +143,8 @@ caa_main_predict:       $(OBJ3) $(OBJ) $(LIBTAUCS)
 	$(LD) $(CFLAGS)  $(OBJ3) $(OBJ) -o $(BIN)/caa_main_predict $(LFLAGS) $(LIB)
 #	$(LD) $(CFLAGS)   $(OBJ) -o $(BIN)/predict $(LFLAGS) $(LIB)
 
-$(LIBBLAS): $(LIBLAPACK)
-
-$(LIBLAPACK):
-	$(MAKE) -C $(LIBLAPACKDIR) lapacklib blaslib
+$(LIBBLAS):
+	$(MAKE) -C $(LIBBLASDIR) DYNAMIC_ARCH=1 NO_SHARED=1 FC=gfortran
 
 $(LIBMETIS):
 	CC="$(CC)" $(MAKE) -C $(LIBMETISDIR)/Lib
@@ -156,10 +152,10 @@ $(LIBMETIS):
 $(F2C):
 	$(MAKE) -C $(LIBF2CDIR)
 
-$(LIBTAUCS): $(LIBLAPACK) $(LIBBLAS) $(LIBMETIS) $(F2C)
+$(LIBTAUCS): $(LIBBLAS) $(LIBMETIS) $(F2C)
 	CC="$(CC)" $(MAKE) -C $(LIBTAUCSDIR) -f configurator/makefile.unix
 	cd $(LIBTAUCSDIR); OSTYPE=$(OSTYPE) configurator/configurator
-	CC=gfortran $(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK=../../$(LIBLAPACK) LIBBLAS=../../$(LIBBLAS) LIBMETIS=../../$(LIBMETIS) LIBF77="$(F2C)"
+	CC=gfortran $(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK="" LIBBLAS="../../$(LIBBLAS) -lpthread" LIBMETIS=../../$(LIBMETIS) LIBF77="$(F2C)"
 
 #$(LIBOPENBLAS):
 #	$(MAKE) -C $(LIBOPENBLASDIR) libs $(OPENBLASFLAG) NO_SHARED=1
@@ -237,6 +233,5 @@ cleanall: clean
 	$(MAKE) -C $(LIBTAUCSDIR) clean
 	$(MAKE) -C $(LIBTAUCSDIR) distclean
 	$(MAKE) -C $(LIBMETISDIR) realclean
-#	$(MAKE) -C $(LIBOPENBLASDIR) clean
-	$(MAKE) -C $(LIBLAPACKDIR) clean
+	$(MAKE) -C $(LIBBLASDIR) clean
 	$(MAKE) -C $(LIBF2CDIR) clean
