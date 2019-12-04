@@ -30,6 +30,9 @@ notifications:
     on_failure: change
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then R -e 'source("https://install-github.me/r-lib/remotes")'; fi
+script:
+  - travis_wait 30 R CMD build .
+  - travis_wait 30 R CMD check *tar.gz
 after_success:
   # Get Package name and version from DESCRIPTION
   - 'export PKGVER=$(sed -n "s/Version: *\([^ ]*\)/\1/p" DESCRIPTION)'
