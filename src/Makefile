@@ -53,7 +53,7 @@ LIBMETISDIR = libs/metis
 LIBMETIS = $(LIBMETISDIR)/libmetis.a
 
 LIBBLASDIR = libs/openblas
-LIBBLAS = $(LIBBLASDIR)/libopenblas.a
+LIBBLAS = $(LIBBLASDIR)/libopenblasp-r0.3.7.a
 
 TEST   = test.o 
 
