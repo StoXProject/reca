@@ -1,13 +1,7 @@
-#INCLUDE = -I/usr/local/include -I/nr/prog/R/2.10.1_UBUNTU8.04/lib64/R/include/
-#INCLUDE = -I/usr/local/include -I/usr/lib
-#CFLAGS = -g -Wall -pg -O3 $(INCLUDE)
-#DEBUG_CFLAGS = -DLOG_FILE -DDEBUG_INPUT -DDEBUG_PROG -DDEBUG_GAUSS_FILE 
 DEBUG_CFLAGS =
-#CFLAGS = $(DEBUG_CFLAGS) -g -pg -O0 $(INCLUDE) -L. 
 CFLAGS = $(DEBUG_CFLAGS) -g -O2 $(INCLUDE) 
 
 LIB    = -lpthread -lm
-#LFLAGS = -L/usr/lib -L../libs -L/usr/lib/atlas-base/atlas -L/usr/lib/atlas-base
 LFLAGS = $(LIBTAUCS) $(LIBMETIS) $(LIBBLAS)
 BIN    = .
 LD     = $(CC)
@@ -33,16 +27,16 @@ else
 endif
 
 # Whether to build universal openblas
-#OPENBLASFLAG :=
-#ifeq ($(UNIVERSAL_BLAS), 1)
-#        OPENBLASFLAG = "DYNAMIC_ARCH=1"
-#endif
+OPENBLASFLAG =
+ifeq ($(TRAVIS), true)
+        OPENBLASFLAG = "DYNAMIC_ARCH=1"
+endif
+ifeq ($(APPVEYOR), True)
+        OPENBLASFLAG = "DYNAMIC_ARCH=1"
+endif
 
 
 # Required static libs
-#LIBOPENBLASDIR = libs/openblas
-#LIBOPENBLAS = $(LIBOPENBLASDIR)/libopenblas.a 
-
 LIBF2CDIR = libs/f2c
 LIBF2C = $(LIBF2CDIR)/libf2c.a
 
@@ -53,7 +47,7 @@ LIBMETISDIR = libs/metis
 LIBMETIS = $(LIBMETISDIR)/libmetis.a
 
 LIBBLASDIR = libs/openblas
-LIBBLAS = $(LIBBLASDIR)/libopenblasp-r0.3.7.a
+LIBBLAS = $(LIBBLASDIR)/libblas.a
 
 TEST   = test.o 
 
@@ -144,21 +138,23 @@ caa_main_predict:       $(OBJ3) $(OBJ) $(LIBTAUCS)
 #	$(LD) $(CFLAGS)   $(OBJ) -o $(BIN)/predict $(LFLAGS) $(LIB)
 
 $(LIBBLAS):
-	$(MAKE) -C $(LIBBLASDIR) DYNAMIC_ARCH=1 NO_SHARED=1
+	>&2 echo "Building OpenBLAS"
+	$(MAKE) -C $(LIBBLASDIR) $(OPENBLASFLAG) FC=$(FC) NO_LAPACKE=1 NO_SHARED=1 libs netlib
+	cp -f $(LIBBLASDIR)/libopenblas*p*.a $(LIBBLASDIR)/libblas.a
 
 $(LIBMETIS):
+	>&2 echo "Building METIS"
 	CC="$(CC)" $(MAKE) -C $(LIBMETISDIR)/Lib
 
 $(F2C):
+	>&2 echo "Building F2C"
 	$(MAKE) -C $(LIBF2CDIR)
 
 $(LIBTAUCS): $(LIBBLAS) $(LIBMETIS) $(F2C)
+	>&2 echo "Building TAUCS"
 	CC="$(CC)" $(MAKE) -C $(LIBTAUCSDIR) -f configurator/makefile.unix
 	cd $(LIBTAUCSDIR); OSTYPE=$(OSTYPE) configurator/configurator
 	CC=gfortran $(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK="" LIBBLAS="../../$(LIBBLAS) -lpthread" LIBMETIS=../../$(LIBMETIS) LIBF77="$(F2C)"
-
-#$(LIBOPENBLAS):
-#	$(MAKE) -C $(LIBOPENBLASDIR) libs $(OPENBLASFLAG) NO_SHARED=1
 
 caa_main_model1.o: caa.h caa_read_binary.h caa_estimate.h caa_main_model1.c
 caa_main_model2.o: caa.h caa_read_binary.h caa_estimate.h caa_main_model2.c
