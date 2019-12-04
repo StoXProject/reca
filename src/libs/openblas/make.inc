@@ -1,4 +1,4 @@
-SHELL = /bin/sh
+SHELL = sh
 PLAT = _LINUX
 DRVOPTS  = $(NOOPT)
 #ARCHFLAGS= $(ARFLAGS) -ru
