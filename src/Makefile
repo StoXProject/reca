@@ -1,5 +1,5 @@
 DEBUG_CFLAGS =
-CFLAGS = $(DEBUG_CFLAGS) -g -O2 $(INCLUDE) 
+ECA_CFLAGS = $(DEBUG_CFLAGS) -g -O3 $(INCLUDE)
 
 LIB    = -lpthread -lm
 LFLAGS = $(LIBTAUCS) $(LIBMETIS) $(LIBBLAS)
@@ -119,7 +119,7 @@ OBJ  =  caa_predict.o \
         dcdflib.o \
         GMRFLib-fortran.o 
 
-#.c.o : $(CC) -c $(CFLAGS) $<
+#.c.o : $(CC) -c $(ECA_CFLAGS) $<
 
 .PHONY : all caa clean cleanall
 
@@ -128,14 +128,14 @@ all: caa install
 caa: caa_main_model1 caa_main_model2 caa_main_predict
 
 caa_main_model1:        $(OBJ1) $(OBJ) $(LIBTAUCS)
-	$(LD) $(CFLAGS)  $(OBJ1) $(OBJ) -o $(BIN)/caa_main_model1 $(LFLAGS) $(LIB)
+	$(LD) $(ECA_CFLAGS)  $(OBJ1) $(OBJ) -o $(BIN)/caa_main_model1 $(LFLAGS) $(LIB)
 
 caa_main_model2:        $(OBJ2) $(OBJ) $(LIBTAUCS)
-	$(LD) $(CFLAGS)  $(OBJ2) $(OBJ) -o $(BIN)/caa_main_model2 $(LFLAGS) $(LIB)
+	$(LD) $(ECA_CFLAGS)  $(OBJ2) $(OBJ) -o $(BIN)/caa_main_model2 $(LFLAGS) $(LIB)
 
 caa_main_predict:       $(OBJ3) $(OBJ) $(LIBTAUCS)
-	$(LD) $(CFLAGS)  $(OBJ3) $(OBJ) -o $(BIN)/caa_main_predict $(LFLAGS) $(LIB)
-#	$(LD) $(CFLAGS)   $(OBJ) -o $(BIN)/predict $(LFLAGS) $(LIB)
+	$(LD) $(ECA_CFLAGS)  $(OBJ3) $(OBJ) -o $(BIN)/caa_main_predict $(LFLAGS) $(LIB)
+#	$(LD) $(ECA_CFLAGS)   $(OBJ) -o $(BIN)/predict $(LFLAGS) $(LIB)
 
 $(LIBBLAS):
 	>&2 echo "Building OpenBLAS"
