@@ -4,6 +4,7 @@ ECA_CFLAGS = $(DEBUG_CFLAGS) -g -O3 $(INCLUDE)
 LIB    = -lpthread -lm
 LFLAGS = $(LIBTAUCS) $(LIBMETIS) $(LIBBLAS)
 BIN    = .
+CC     = gcc
 LD     = $(CC)
 FC     = gfortran
 LD     = gfortran -static-libgcc
@@ -28,13 +29,9 @@ endif
 
 # Whether to build universal openblas
 OPENBLASFLAG =
-ifeq ($(TRAVIS), true)
+ifeq ($(CI), true)
         OPENBLASFLAG = "DYNAMIC_ARCH=1"
 endif
-ifeq ($(APPVEYOR), True)
-        OPENBLASFLAG = "DYNAMIC_ARCH=1"
-endif
-
 
 # Required static libs
 LIBF2CDIR = libs/f2c
