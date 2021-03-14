@@ -7,7 +7,7 @@ BIN    = .
 CC     = gcc
 LD     = $(CC)
 FC     = gfortran
-LD     = gfortran -static-libgcc
+LD     = gfortran -static-libgfortran -static-libgcc
 
 # F2C lib for OSX
 F2C =
