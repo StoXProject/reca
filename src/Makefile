@@ -2,12 +2,14 @@ DEBUG_CFLAGS =
 ECA_CFLAGS = $(DEBUG_CFLAGS) -g -O3 $(INCLUDE)
 
 LIB    = -lpthread -lm
-LFLAGS = $(LIBTAUCS) $(LIBMETIS) $(LIBBLAS)
+LFLAGS = -static-libgcc \
+	$(LIBTAUCS) $(LIBMETIS) $(LIBBLAS) \
+	$(or $(wildcard $(shell gcc -print-file-name=libgfortran.a))  ,-lgfortran) \
+	$(or $(wildcard $(shell gcc -print-file-name=libquadmath.a))  ,-lquadmath)
 BIN    = .
 CC     = gcc
 LD     = $(CC)
 FC     = gfortran
-LD     = gfortran -static-libgcc
 
 # F2C lib for OSX
 F2C =
@@ -125,13 +127,13 @@ all: caa install
 caa: caa_main_model1 caa_main_model2 caa_main_predict
 
 caa_main_model1:        $(OBJ1) $(OBJ) $(LIBTAUCS)
-	$(LD) $(ECA_CFLAGS)  $(OBJ1) $(OBJ) -o $(BIN)/caa_main_model1 $(LFLAGS) $(LIB)
+	$(LD) $(OBJ1) $(OBJ) -o $(BIN)/caa_main_model1 $(LFLAGS) $(LIB)
 
 caa_main_model2:        $(OBJ2) $(OBJ) $(LIBTAUCS)
-	$(LD) $(ECA_CFLAGS)  $(OBJ2) $(OBJ) -o $(BIN)/caa_main_model2 $(LFLAGS) $(LIB)
+	$(LD) $(OBJ2) $(OBJ) -o $(BIN)/caa_main_model2 $(LFLAGS) $(LIB)
 
 caa_main_predict:       $(OBJ3) $(OBJ) $(LIBTAUCS)
-	$(LD) $(ECA_CFLAGS)  $(OBJ3) $(OBJ) -o $(BIN)/caa_main_predict $(LFLAGS) $(LIB)
+	$(LD) $(OBJ3) $(OBJ) -o $(BIN)/caa_main_predict $(LFLAGS) $(LIB)
 #	$(LD) $(ECA_CFLAGS)   $(OBJ) -o $(BIN)/predict $(LFLAGS) $(LIB)
 
 $(LIBBLAS):
