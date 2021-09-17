@@ -24,8 +24,13 @@ else
 		OSTYPE = linux
 	endif
 	ifeq ($(UNAME_S),Darwin)
+		LD = gfortran
+		ECA_CFLAGS = $ECA_CFLAGS -D_POSIX_C_SOURCE=199506L 
+		LFLAGS = -static-libgfortran -lgcc -lSystem \
+			$(LIBTAUCS) $(LIBMETIS) $(LIBBLAS) \
+				$(or $(wildcard $(shell gcc -print-file-name=libgfortran.a))  ,-lgfortran) \
+				$(or $(wildcard $(shell gcc -print-file-name=libquadmath.a))  ,-lquadmath)
 		OSTYPE = darwin_intel
-		F2C = ../../$(LIBF2C)
 	endif
 endif
 
