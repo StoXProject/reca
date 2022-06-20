@@ -30,10 +30,7 @@ else
 endif
 
 # Whether to build universal openblas
-OPENBLASFLAG =
-ifeq ($(CI), true)
-        OPENBLASFLAG = "DYNAMIC_ARCH=1"
-endif
+OPENBLASFLAG = "DYNAMIC_ARCH=1"
 
 # Required static libs
 LIBF2CDIR = libs/f2c
