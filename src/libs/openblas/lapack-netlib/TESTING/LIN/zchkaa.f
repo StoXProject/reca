@@ -110,17 +110,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2019
-*
 *> \ingroup complex16_lin
 *
 *  =====================================================================
       PROGRAM ZCHKAA
 *
-*  -- LAPACK test routine (version 3.9.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2019
 *
 *  =====================================================================
 *
@@ -156,9 +153,13 @@
      $                   NBVAL( MAXIN ), NBVAL2( MAXIN ),
      $                   NSVAL( MAXIN ), NVAL( MAXIN ), NXVAL( MAXIN ),
      $                   RANKVAL( MAXIN ), PIV( NMAX )
-      DOUBLE PRECISION   RWORK( 150*NMAX+2*MAXRHS ), S( 2*NMAX )
-      COMPLEX*16         A( ( KDMAX+1 )*NMAX, 7 ), B( NMAX*MAXRHS, 4 ),
-     $                   E( NMAX ),  WORK( NMAX, NMAX+MAXRHS+10 )
+      DOUBLE PRECISION   S( 2*NMAX )
+      COMPLEX*16         E( NMAX )
+*
+*    .. Allocatable Arrays ..
+      INTEGER AllocateStatus
+      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE::   RWORK
+      COMPLEX*16, DIMENSION(:,:), ALLOCATABLE::  A, B, WORK
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME, LSAMEN
@@ -194,6 +195,16 @@
 *     ..
 *     .. Data statements ..
       DATA               THREQ / 2.0D0 / , INTSTR / '0123456789' /
+*
+*     .. Allocate memory dynamically ..
+      ALLOCATE (RWORK( 150*NMAX+2*MAXRHS ), STAT = AllocateStatus)
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      ALLOCATE (A ((KDMAX+1) * NMAX, 7), STAT = AllocateStatus)
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      ALLOCATE (B (NMAX * MAXRHS, 4), STAT = AllocateStatus)
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      ALLOCATE (WORK (NMAX, NMAX+MAXRHS+10), STAT = AllocateStatus)
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
 *     ..
 *     .. Executable Statements ..
 *
@@ -1231,6 +1242,11 @@
       S2 = DSECND( )
       WRITE( NOUT, FMT = 9998 )
       WRITE( NOUT, FMT = 9997 )S2 - S1
+*
+      DEALLOCATE (A, STAT = AllocateStatus)
+      DEALLOCATE (B, STAT = AllocateStatus)
+      DEALLOCATE (RWORK, STAT = AllocateStatus)
+      DEALLOCATE (WORK,  STAT = AllocateStatus)
 *
  9999 FORMAT( / ' Execution not attempted due to input errors' )
  9998 FORMAT( / ' End of tests' )
