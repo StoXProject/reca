@@ -267,9 +267,9 @@
      $                   XERBLA
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME, DISNAN
+      LOGICAL            LSAME
       DOUBLE PRECISION   DLAMCH, DLANGE
-      EXTERNAL           DLAMCH, DLANGE, LSAME, DISNAN
+      EXTERNAL           DLAMCH, DLANGE, LSAME
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          INT, MAX, MIN, SQRT
@@ -599,10 +599,6 @@
 *     Scale A if max element outside range [SMLNUM,BIGNUM]
 *
       ANRM = DLANGE( 'M', M, N, A, LDA, DUM )
-      IF( DISNAN( ANRM ) ) THEN
-          INFO = -4
-          RETURN
-      END IF
       ISCL = 0
       IF( ANRM.GT.ZERO .AND. ANRM.LT.SMLNUM ) THEN
          ISCL = 1

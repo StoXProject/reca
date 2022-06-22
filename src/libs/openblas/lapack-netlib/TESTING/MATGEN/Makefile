@@ -66,7 +66,6 @@ ZMATGEN = zlatms.o zlatme.o zlatmr.o zlatmt.o \
 endif
 
 .PHONY: all
-.NOTPARALLEL:
 all: $(TMGLIB)
 
 ALLOBJ = $(SMATGEN) $(CMATGEN) $(SCATGEN) $(DMATGEN) $(ZMATGEN) \

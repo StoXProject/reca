@@ -1,6 +1,7 @@
-ifeq ($(HAVE_GAS), 1)
+ifeq ($(__BYTE_ORDER__),__ORDER_BIG_ENDIAN__)
 include $(KERNELDIR)/KERNEL.POWER8
 else
+
 #SGEMM_BETA = ../generic/gemm_beta.c
 #DGEMM_BETA = ../generic/gemm_beta.c
 #CGEMM_BETA = ../generic/zgemm_beta.c
@@ -32,16 +33,6 @@ SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
-SGEMM_SMALL_M_PERMIT = gemm_small_kernel_permit_power10.c
-SGEMM_SMALL_K_NN = sgemm_small_kernel_nn_power10.c
-SGEMM_SMALL_K_B0_NN = sgemm_small_kernel_nn_power10.c
-SGEMM_SMALL_K_NT = sgemm_small_kernel_nt_power10.c
-SGEMM_SMALL_K_B0_NT = sgemm_small_kernel_nt_power10.c
-SGEMM_SMALL_K_TN = sgemm_small_kernel_tn_power10.c
-SGEMM_SMALL_K_B0_TN = sgemm_small_kernel_tn_power10.c
-SGEMM_SMALL_K_TT = sgemm_small_kernel_tt_power10.c
-SGEMM_SMALL_K_B0_TT = sgemm_small_kernel_tt_power10.c
-
 DGEMMKERNEL    =  dgemm_kernel_power10.c
 DGEMMINCOPY    =
 DGEMMITCOPY    =
@@ -52,18 +43,7 @@ DGEMMITCOPYOBJ =
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
-DGEMM_SMALL_M_PERMIT = gemm_small_kernel_permit_power10.c
-DGEMM_SMALL_K_NT = dgemm_small_kernel_nt_power10.c
-DGEMM_SMALL_K_B0_NT = dgemm_small_kernel_nt_power10.c
-DGEMM_SMALL_K_NN = dgemm_small_kernel_nn_power10.c
-DGEMM_SMALL_K_B0_NN = dgemm_small_kernel_nn_power10.c
-DGEMM_SMALL_K_TT = dgemm_small_kernel_tt_power10.c
-DGEMM_SMALL_K_B0_TT = dgemm_small_kernel_tt_power10.c
-DGEMM_SMALL_K_TN = dgemm_small_kernel_tn_power10.c
-DGEMM_SMALL_K_B0_TN = dgemm_small_kernel_tn_power10.c
-
 CGEMMKERNEL    = cgemm_kernel_power10.S
-#CGEMMKERNEL     = cgemm_kernel_8x4_power8.S
 CGEMMINCOPY    = ../generic/zgemm_ncopy_8.c
 CGEMMITCOPY    = ../generic/zgemm_tcopy_8.c
 CGEMMONCOPY    = ../generic/zgemm_ncopy_4.c
@@ -174,7 +154,11 @@ ZCOPYKERNEL  = zcopy_power10.c
 SDOTKERNEL   =  sdot_power10.c
 DDOTKERNEL   =  ddot_power10.c
 DSDOTKERNEL  =  sdot_power10.c
+ifneq ($(GCCVERSIONGTEQ9),1)
+CDOTKERNEL   =  cdot_power9.S
+else
 CDOTKERNEL   =  cdot.c
+endif
 ZDOTKERNEL   =  zdot.c
 #
 SNRM2KERNEL  = ../arm/nrm2.c
@@ -189,13 +173,8 @@ ZROTKERNEL   = zrot.c
 #
 SSCALKERNEL  = sscal.c
 DSCALKERNEL  = dscal.c
-ifeq ($(C_COMPILER), PGI)
-CSCALKERNEL  = ../arm/zscal.c
-ZSCALKERNEL  = ../arm/zscal.c
-else
 CSCALKERNEL  = zscal.c
 ZSCALKERNEL  = zscal.c
-endif
 #
 SSWAPKERNEL  = sswap.c
 DSWAPKERNEL  = dswap.c
@@ -206,7 +185,7 @@ ZSWAPKERNEL  = zswap.c
 SGEMVNKERNEL = sgemv_n.c
 DGEMVNKERNEL = dgemv_n_power10.c
 CGEMVNKERNEL = cgemv_n.c
-ZGEMVNKERNEL =  zgemv_n_power10.c
+ZGEMVNKERNEL = zgemv_n_4.c
 #
 SGEMVTKERNEL = sgemv_t.c
 DGEMVTKERNEL = dgemv_t_power10.c
@@ -238,4 +217,5 @@ QCABS_KERNEL	= ../generic/cabs.c
 #Dump kernel
 CGEMM3MKERNEL    = ../generic/zgemm3mkernel_dump.c
 ZGEMM3MKERNEL    = ../generic/zgemm3mkernel_dump.c
+
 endif

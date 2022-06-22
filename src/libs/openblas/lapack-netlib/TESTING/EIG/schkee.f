@@ -1040,10 +1040,6 @@
 *  =====================================================================
       PROGRAM SCHKEE
 *
-#if defined(_OPENMP)
-      use omp_lib
-#endif
-*
 *  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
@@ -1082,7 +1078,6 @@
       INTEGER            I, I1, IC, INFO, ITMP, K, LENP, MAXTYP, NEWSD,
      $                   NK, NN, NPARMS, NRHS, NTYPES,
      $                   VERS_MAJOR, VERS_MINOR, VERS_PATCH
-      INTEGER*4          N_THREADS, ONE_THREAD
       REAL               EPS, S1, S2, THRESH, THRSHN
 *     ..
 *     .. Local Arrays ..
@@ -1094,13 +1089,10 @@
      $                   PVAL( MAXIN )
       INTEGER            INMIN( MAXIN ), INWIN( MAXIN ), INIBL( MAXIN ),
      $                   ISHFTS( MAXIN ), IACC22( MAXIN )
-      REAL               D( NMAX, 12 ), RESULT( 500 ), TAUA( NMAX ),
-     $                   TAUB( NMAX ), X( 5*NMAX )
-*     ..
-*     .. Allocatable Arrays ..
-      INTEGER AllocateStatus
-      REAL, DIMENSION(:), ALLOCATABLE :: WORK
-      REAL, DIMENSION(:,:), ALLOCATABLE :: A, B, C
+      REAL               A( NMAX*NMAX, NEED ), B( NMAX*NMAX, 5 ),
+     $                   C( NCMAX*NCMAX, NCMAX*NCMAX ), D( NMAX, 12 ),
+     $                   RESULT( 500 ), TAUA( NMAX ), TAUB( NMAX ),
+     $                   WORK( LWORK ), X( 5*NMAX )
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAMEN
@@ -1140,18 +1132,7 @@
 *     ..
 *     .. Data statements ..
       DATA               INTSTR / '0123456789' /
-      DATA               IOLDSD / 0, 0, 0, 1 / 
-*     ..
-*     .. Allocate memory dynamically ..
-*
-      ALLOCATE ( A(NMAX*NMAX,NEED), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
-      ALLOCATE ( B(NMAX*NMAX,5), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
-      ALLOCATE ( C(NCMAX*NCMAX,NCMAX*NCMAX), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
-      ALLOCATE ( WORK(LWORK), STAT = AllocateStatus )
-      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      DATA               IOLDSD / 0, 0, 0, 1 /
 *     ..
 *     .. Executable Statements ..
 *
@@ -1876,17 +1857,8 @@
          CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
          CALL XLAENV( 1, 1 )
          CALL XLAENV( 9, 25 )
-         IF( TSTERR ) THEN
-#if defined(_OPENMP)
-            N_THREADS = OMP_GET_MAX_THREADS()
-            ONE_THREAD = 1
-            CALL OMP_SET_NUM_THREADS(ONE_THREAD)
-#endif
-            CALL SERRST( 'SST', NOUT )
-#if defined(_OPENMP)
-            CALL OMP_SET_NUM_THREADS(N_THREADS)
-#endif
-         END IF
+         IF( TSTERR )
+     $      CALL SERRST( 'SST', NOUT )
          DO 290 I = 1, NPARMS
             CALL XLAENV( 1, NBVAL( I ) )
             CALL XLAENV( 2, NBMIN( I ) )
@@ -2468,11 +2440,6 @@
       WRITE( NOUT, FMT = 9994 )
       S2 = SECOND( )
       WRITE( NOUT, FMT = 9993 )S2 - S1
-*
-      DEALLOCATE (A, STAT = AllocateStatus)
-      DEALLOCATE (B, STAT = AllocateStatus)
-      DEALLOCATE (C, STAT = AllocateStatus)
-      DEALLOCATE (WORK,  STAT = AllocateStatus)
 *
  9999 FORMAT( / ' Execution not attempted due to input errors' )
  9997 FORMAT( / / 1X, A3, ':  NB =', I4, ', NBMIN =', I4, ', NX =', I4 )

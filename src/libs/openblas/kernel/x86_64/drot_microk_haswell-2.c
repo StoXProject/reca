@@ -1,4 +1,6 @@
-#if defined(HAVE_FMA3)  && defined(HAVE_AVX2)
+/* need a new enough GCC for avx512 support */
+#if (( defined(__GNUC__)  && __GNUC__   > 6 && defined(__AVX512CD__)) || (defined(__clang__) && __clang_major__ >= 9))
+
 #define HAVE_DROT_KERNEL 1
 
 #include <immintrin.h>

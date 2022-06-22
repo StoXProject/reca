@@ -340,8 +340,7 @@ REALNAME:
 	.align 16; \
 	.globl REALNAME ;\
        .type REALNAME, @function; \
-REALNAME: \
-	_CET_ENDBR
+REALNAME:
 
 #ifdef PROFILE
 #define PROFCODE call mcount

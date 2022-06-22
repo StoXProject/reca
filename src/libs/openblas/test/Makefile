@@ -1,8 +1,6 @@
 TOPDIR	= ..
 include ../Makefile.system
-ifeq ($(F_COMPILER),GFORTRAN)
-        override FFLAGS += -fno-tree-vectorize
-endif
+
 
 ifeq ($(NOFORTRAN),1)
 all ::
@@ -261,15 +259,16 @@ endif
 
 FLDFLAGS = $(FFLAGS:-fPIC=) $(LDFLAGS)
 
+ifeq ($(CORE), C910V)
+EXTRALIB =
+CEXTRALIB =
+endif
 
 ifeq ($(USE_OPENMP), 1)
 ifeq ($(F_COMPILER), GFORTRAN)
 ifeq ($(C_COMPILER), CLANG)
 CEXTRALIB = -lomp
 endif
-endif
-ifeq ($(F_COMPILER), NAG)
-CEXTRALIB = -lgomp
 endif
 endif
 

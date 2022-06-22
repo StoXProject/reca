@@ -139,7 +139,7 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      REAL               ZERO, HALF, ONE, TWO
+      REAL               ZERO, HALF, ONE
       PARAMETER          ( ZERO = 0.0E+0, HALF = 0.5E+0, ONE = 1.0E+0,
      $                     TWO = 2.0E+0 )
       REAL               MULTPL

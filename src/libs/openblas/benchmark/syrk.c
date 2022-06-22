@@ -56,20 +56,17 @@ int main(int argc, char *argv[]){
 
   char uplo='U';
   char trans='N';
-  
+
   if ((p = getenv("OPENBLAS_UPLO"))) uplo=*p;
   if ((p = getenv("OPENBLAS_TRANS"))) trans=*p;
 
-  blasint m, i, j, l;
+  blasint m, i, j;
 
   int from =   1;
   int to   = 200;
   int step =   1;
-  int loops =  1;
 
-  if ((p = getenv("OPENBLAS_LOOPS"))) loops=*p;
-
-  double time1,timeg;
+  double time1;
 
   argc--;argv++;
 
@@ -98,11 +95,8 @@ int main(int argc, char *argv[]){
 
   for(m = from; m <= to; m += step)
   {
-    timeg = 0.;
 
     fprintf(stderr, " %6d : ", (int)m);
-
-    for(l = 0; l < loops; l++) {
 
     for(j = 0; j < m; j++){
       for(i = 0; i < m * COMPSIZE; i++){
@@ -117,10 +111,8 @@ int main(int argc, char *argv[]){
 
     end();
 
-    timeg += getsec();
-    
-    } //loops
-    time1 = timeg / (double)loops;
+    time1 = getsec();
+
     fprintf(stderr,
 	    " %10.2f MFlops\n",
 	    COMPSIZE * COMPSIZE * 1. * (double)m * (double)m * (double)m / time1 * 1.e-6);

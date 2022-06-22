@@ -28,9 +28,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 
 #include "common.h"
-#if defined(POWER10)
-#include "cdot_microk_power10.c"
-#else
 #ifndef HAVE_KERNEL_8
 #include <altivec.h> 
 
@@ -102,7 +99,6 @@ static void cdot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, float *dot)
  
 }
 #endif
-#endif
  
 
 OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y) {
@@ -120,11 +116,7 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 
     if ((inc_x == 1) && (inc_y == 1)) {
 
-#if defined(POWER10)
-        BLASLONG n1 = n & -16;
-#else
         BLASLONG n1 = n & -8;
-#endif
         BLASLONG j=0; 
 
         if (n1){

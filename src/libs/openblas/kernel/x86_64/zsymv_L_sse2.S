@@ -57,7 +57,7 @@
 #define PREFETCHSIZE	(16 * 24)
 #endif
 
-#if defined(NEHALEM) || defined(SANDYBRIDGE) || defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX) || defined (COOPERLAKE) || defined (SAPPHIRERAPIDS)
+#if defined(NEHALEM) || defined(SANDYBRIDGE) || defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX) || defined (COOPERLAKE)
 #define PREFETCH	prefetcht0
 #define PREFETCHW	prefetcht0
 #define PREFETCHSIZE	(16 * 24)
@@ -451,6 +451,7 @@
 #endif
 
 	MOVDDUP(4 * SIZE, A1, a1)
+	MOVDDUP(6 * SIZE, A2, a2)
 
 	movsd	 0 * SIZE(YY), yy1
 	movhpd	 1 * SIZE(YY), yy1
@@ -470,9 +471,7 @@
 	subq	IS, I
 	subq	$2, I
 	sarq	$2, I
-	jle	.L14
-
-	MOVDDUP(6 * SIZE - (4 * SIZE), A2, a2)
+	jle	.L15
 	ALIGN_3
 
 .L12:
@@ -633,16 +632,6 @@
 	jg	 .L12
 	ALIGN_3
 
-.L14:
-	movq     M, I
-	subq    IS, I
-	subq    $2, I
-	testq   $2, I
-	jle     .L16
-
-	MOVDDUP(6 * SIZE - (4 * SIZE), A2, a2)
-	jmp     .L15_pastcheck
-
 .L15:
 	movq	 M, I
 	subq	IS, I
@@ -650,7 +639,6 @@
 	testq	$2, I
 	jle	.L16
 
-.L15_pastcheck:
 	movapd	  xtemp1, xt1
 	mulpd	  a1,     xt1
 	mulpd	  atemp1, a1

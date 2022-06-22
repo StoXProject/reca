@@ -1,7 +1,38 @@
 #include "common.h"
-#include "cpuid_zarch.h"
 #include <stdbool.h>
 
+// Guard the use of getauxval() on glibc version >= 2.16
+#ifdef __GLIBC__
+#include <features.h>
+#if __GLIBC_PREREQ(2, 16)
+#include <sys/auxv.h>
+#define HAVE_GETAUXVAL 1
+
+static unsigned long get_hwcap(void)
+{
+	unsigned long hwcap = getauxval(AT_HWCAP);
+	char *maskenv;
+
+	// honor requests for not using specific CPU features in LD_HWCAP_MASK
+	maskenv = getenv("LD_HWCAP_MASK");
+	if (maskenv)
+		hwcap &= strtoul(maskenv, NULL, 0);
+
+	return hwcap;
+	// note that a missing auxval is interpreted as no capabilities
+	// available, which is safe.
+}
+
+#else // __GLIBC_PREREQ(2, 16)
+#warn "Cannot detect SIMD support in Z13 or newer architectures since glibc is older than 2.16"
+
+static unsigned long get_hwcap(void) {
+	// treat missing support for getauxval() as no capabilities available,
+	// which is safe.
+	return 0;
+}
+#endif // __GLIBC_PREREQ(2, 16)
+#endif // __GLIBC
 
 extern gotoblas_t gotoblas_ZARCH_GENERIC;
 #ifdef DYN_Z13
@@ -13,19 +44,25 @@ extern gotoblas_t gotoblas_Z14;
 
 #define NUM_CORETYPES 4
 
-extern int openblas_verbose();
 extern void openblas_warning(int verbose, const char* msg);
+
+static char* corename[] = {
+	"unknown",
+	"Z13",
+	"Z14",
+	"ZARCH_GENERIC",
+};
 
 char* gotoblas_corename(void) {
 #ifdef DYN_Z13
-	if (gotoblas == &gotoblas_Z13)	return cpuname[CPU_Z13];
+	if (gotoblas == &gotoblas_Z13)	return corename[1];
 #endif
 #ifdef DYN_Z14
-	if (gotoblas == &gotoblas_Z14)	return cpuname[CPU_Z14];
+	if (gotoblas == &gotoblas_Z14)	return corename[2];
 #endif
-	if (gotoblas == &gotoblas_ZARCH_GENERIC) return cpuname[CPU_GENERIC];
+	if (gotoblas == &gotoblas_ZARCH_GENERIC) return corename[3];
 
-	return "unknown";
+	return corename[0];
 }
 
 #ifndef HWCAP_S390_VXE
@@ -42,28 +79,25 @@ char* gotoblas_corename(void) {
  */
 static gotoblas_t* get_coretype(void) {
 
-	int cpu = detect();
+	unsigned long hwcap __attribute__((unused)) = get_hwcap();
 
-	switch(cpu) {
+#ifdef DYN_Z14
 	// z14 and z15 systems: exploit Vector Facility (SIMD) and
 	// Vector-Enhancements Facility 1 (float SIMD instructions), if present.
-	case CPU_Z14:
-#ifdef DYN_Z14
+	if ((hwcap & HWCAP_S390_VX) && (hwcap & HWCAP_S390_VXE))
 		return &gotoblas_Z14;
 #endif
 
-	// z13: Vector Facility (SIMD for double)
-	case CPU_Z13:
 #ifdef DYN_Z13
+	// z13: Vector Facility (SIMD for double)
+	if (hwcap & HWCAP_S390_VX)
 		return &gotoblas_Z13;
 #endif
 
-	default:
 	// fallback in case of missing compiler support, systems before z13, or
 	// when the OS does not advertise support for the Vector Facility (e.g.,
 	// missing support in the OS kernel)
-		return &gotoblas_ZARCH_GENERIC;
-	}
+	return &gotoblas_ZARCH_GENERIC;
 }
 
 static gotoblas_t* force_coretype(char* coretype) {
@@ -74,28 +108,28 @@ static gotoblas_t* force_coretype(char* coretype) {
 
 	for (i = 0; i < NUM_CORETYPES; i++)
 	{
-		if (!strncasecmp(coretype, cpuname[i], 20))
+		if (!strncasecmp(coretype, corename[i], 20))
 		{
 			found = i;
 			break;
 		}
 	}
 
-	if (found == CPU_Z13) {
+	if (found == 1) {
 #ifdef DYN_Z13
 		return &gotoblas_Z13;
 #else
 		openblas_warning(1, "Z13 support not compiled in");
 		return NULL;
 #endif
-	} else if (found == CPU_Z14) {
+	} else if (found == 2) {
 #ifdef DYN_Z14
 		return &gotoblas_Z14;
 #else
 		openblas_warning(1, "Z14 support not compiled in");
 		return NULL;
 #endif
-	} else if (found == CPU_GENERIC) {
+	} else if (found == 3) {
 		return &gotoblas_ZARCH_GENERIC;
 	}
 
@@ -121,11 +155,6 @@ void gotoblas_dynamic_init(void) {
 	else
 	{
 		gotoblas = get_coretype();
-		if (openblas_verbose() >= 2) {
-			snprintf(coremsg, sizeof(coremsg), "Choosing kernels based on getauxval(AT_HWCAP)=0x%lx\n",
-				 getauxval(AT_HWCAP));
-			openblas_warning(2, coremsg);
-		}
 	}
 
 	if (gotoblas == NULL)
@@ -136,11 +165,9 @@ void gotoblas_dynamic_init(void) {
 	}
 
 	if (gotoblas && gotoblas->init) {
-		if (openblas_verbose() >= 2) {
-			strncpy(coren, gotoblas_corename(), 20);
-			sprintf(coremsg, "Core: %s\n", coren);
-			openblas_warning(2, coremsg);
-		}
+		strncpy(coren, gotoblas_corename(), 20);
+		sprintf(coremsg, "Core: %s\n", coren);
+		openblas_warning(2, coremsg);
 		gotoblas->init();
 	}
 	else {

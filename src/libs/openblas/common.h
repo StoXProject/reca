@@ -122,7 +122,7 @@ extern "C" {
 #define ATOM GOTO_ATOM
 #undef  GOTO_ATOM
 #endif
-#elif !defined(OS_EMBEDDED)
+#else
 #include <sys/mman.h>
 #ifndef NO_SYSV_IPC
 #include <sys/shm.h>
@@ -134,9 +134,6 @@ extern "C" {
 #if defined(SMP) || defined(USE_LOCKING)
 #include <pthread.h>
 #endif
-#else
-#include <time.h>
-#include <math.h>
 #endif
 
 #if defined(OS_SUNOS)
@@ -416,15 +413,6 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #include "common_alpha.h"
 #endif
 
-#if (defined(ARCH_X86) || defined(ARCH_X86_64)) && defined(__CET__) && defined(__has_include)
-#if __has_include(<cet.h>)
-#include <cet.h>
-#endif
-#endif
-#ifndef _CET_ENDBR
-#define _CET_ENDBR
-#endif
-
 #ifdef ARCH_X86
 #include "common_x86.h"
 #endif
@@ -449,7 +437,7 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #include "common_mips.h"
 #endif
 
-
+    
 #ifdef ARCH_RISCV64
 #include "common_riscv64.h"
 #endif
@@ -468,14 +456,6 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 
 #ifdef ARCH_ZARCH
 #include "common_zarch.h"
-#endif
-
-#ifdef ARCH_LOONGARCH64
-#include "common_loongarch64.h"
-#endif
-
-#ifdef ARCH_E2K
-#include "common_e2k.h"
 #endif
 
 #ifndef ASSEMBLER
@@ -508,12 +488,10 @@ static inline unsigned long long rpcc(void){
   struct timespec ts;
   clock_gettime(CLOCK_MONOTONIC, &ts);
   return (unsigned long long)ts.tv_sec * 1000000000ull + ts.tv_nsec;
-#elif !defined(OS_EMBEDDED)
+#else
   struct timeval tv;
   gettimeofday(&tv,NULL);
   return (unsigned long long)tv.tv_sec * 1000000000ull + tv.tv_usec * 1000;
-#else
-  return 0;
 #endif
 }
 #define RPCC_DEFINED
@@ -541,10 +519,6 @@ static void __inline blas_lock(volatile BLASULONG *address){
 
 #ifdef OS_LINUX
 #include "common_linux.h"
-#endif
-
-#ifdef OS_EMBEDDED
-#define DTB_DEFAULT_ENTRIES 64
 #endif
 
 #define MMAP_ACCESS (PROT_READ | PROT_WRITE)

@@ -158,8 +158,9 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            IDAMAX
-      DOUBLE PRECISION   DASUM, DZASUM, DLAMCH, ZLANGE
-      EXTERNAL           LSAME, IDAMAX, DASUM, DZASUM, DLAMCH, ZLANGE
+      DOUBLE PRECISION   DASUM, DLAMCH, ZLANGE
+      EXTERNAL           LSAME, IDAMAX, DASUM, DLAMCH, ZLANGE
+      DOUBLE PRECISION   DZASUM
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ZGEMM
