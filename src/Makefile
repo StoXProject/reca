@@ -29,10 +29,10 @@ else
 	endif
 endif
 
-# Whether to build universal openblas
+# Whether to build universal openblas (when running CI on virtual platforms)
 OPENBLASFLAG =
 ifeq ($(CI), true)
-        OPENBLASFLAG = "DYNAMIC_ARCH=1"
+        OPENBLASFLAG = "DYNAMIC_ARCH=1 TARGET=PRESCOTT"
 endif
 
 # Required static libs
