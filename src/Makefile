@@ -29,11 +29,11 @@ else
 	endif
 endif
 
-# Whether to build universal openblas (when running CI on virtual platforms)
-OPENBLASFLAG =
-ifeq ($(CI), true)
-        OPENBLASFLAG = "DYNAMIC_ARCH=0 TARGET=CORE2"
-endif
+## Whether to build universal openblas (when running CI on virtual platforms)
+#OPENBLASFLAG =
+#ifeq ($(CI), true)
+#        OPENBLASFLAG = "DYNAMIC_ARCH=0 TARGET=CORE2"
+#endif
 
 # Required static libs
 LIBF2CDIR = libs/f2c
@@ -45,8 +45,12 @@ LIBTAUCS = $(LIBTAUCSDIR)/lib/$(OSTYPE)/libtaucs.a
 LIBMETISDIR = libs/metis
 LIBMETIS = $(LIBMETISDIR)/libmetis.a
 
-LIBBLASDIR = libs/openblas
-LIBBLAS = $(LIBBLASDIR)/libblas.a
+LIBLAPACKDIR = libs/lapack
+LIBLAPACK = $(LIBLAPACKDIR)/liblapack.a
+
+#LIBBLASDIR = libs/openblas
+#LIBBLAS = $(LIBBLASDIR)/libblas.a
+LIBBLAS = $(LIBLAPACKDIR)/librefblas.a
 
 TEST   = test.o 
 
@@ -136,11 +140,15 @@ caa_main_predict:       $(OBJ3) $(OBJ) $(LIBTAUCS)
 	$(LD) $(OBJ3) $(OBJ) -o $(BIN)/caa_main_predict $(LFLAGS) $(LIB)
 #	$(LD) $(ECA_CFLAGS)   $(OBJ) -o $(BIN)/predict $(LFLAGS) $(LIB)
 
-$(LIBBLAS):
-	>&2 echo "Building OpenBLAS"
-	$(MAKE) -C $(LIBBLASDIR) $(OPENBLASFLAG) FC=$(FC) NO_LAPACKE=1 NO_SHARED=1 libs netlib
-	cp -f $(LIBBLASDIR)/libopenblas*p*.a $(LIBBLASDIR)/libblas.a
+#$(LIBBLAS):
+#	>&2 echo "Building OpenBLAS"
+#	$(MAKE) -C $(LIBBLASDIR) $(OPENBLASFLAG) FC=$(FC) NO_LAPACKE=1 NO_SHARED=1 libs netlib
+#	cp -f $(LIBBLASDIR)/libopenblas*p*.a $(LIBBLASDIR)/libblas.a
+$(LIBBLAS): $(LIBLAPACK)
 
+ $(LIBLAPACK):
+ 	$(MAKE) -C $(LIBLAPACKDIR) lapacklib blaslib
+	
 $(LIBMETIS):
 	>&2 echo "Building METIS"
 	CC="$(CC)" $(MAKE) -C $(LIBMETISDIR)/Lib
@@ -228,5 +236,6 @@ cleanall: clean
 	$(MAKE) -C $(LIBTAUCSDIR) clean
 	$(MAKE) -C $(LIBTAUCSDIR) distclean
 	$(MAKE) -C $(LIBMETISDIR) realclean
-	$(MAKE) -C $(LIBBLASDIR) clean
+#	$(MAKE) -C $(LIBBLASDIR) clean
+	$(MAKE) -C $(LIBLAPACKDIR) clean
 	$(MAKE) -C $(LIBF2CDIR) clean
