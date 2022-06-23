@@ -32,7 +32,7 @@ endif
 # Whether to build universal openblas (when running CI on virtual platforms)
 OPENBLASFLAG =
 ifeq ($(CI), true)
-        OPENBLASFLAG = "DYNAMIC_ARCH=1 TARGET=PRESCOTT"
+        OPENBLASFLAG = "DYNAMIC_ARCH=0 TARGET=CORE2"
 endif
 
 # Required static libs
