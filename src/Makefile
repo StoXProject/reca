@@ -146,8 +146,8 @@ caa_main_predict:       $(OBJ3) $(OBJ) $(LIBTAUCS)
 #	cp -f $(LIBBLASDIR)/libopenblas*p*.a $(LIBBLASDIR)/libblas.a
 $(LIBBLAS): $(LIBLAPACK)
 
- $(LIBLAPACK):
- 	$(MAKE) -C $(LIBLAPACKDIR) lapacklib blaslib
+$(LIBLAPACK):
+	$(MAKE) -C $(LIBLAPACKDIR) lapacklib blaslib
 	
 $(LIBMETIS):
 	>&2 echo "Building METIS"
