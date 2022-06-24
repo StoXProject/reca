@@ -1,15 +1,18 @@
+#INCLUDE = -I/usr/local/include -I/nr/prog/R/2.10.1_UBUNTU8.04/lib64/R/include/
+#INCLUDE = -I/usr/local/include -I/usr/lib
+#CFLAGS = -g -Wall -pg -O3 $(INCLUDE)
+#DEBUG_CFLAGS = -DLOG_FILE -DDEBUG_INPUT -DDEBUG_PROG -DDEBUG_GAUSS_FILE 
 DEBUG_CFLAGS =
-ECA_CFLAGS = $(DEBUG_CFLAGS) -g -O3 $(INCLUDE)
+#CFLAGS = $(DEBUG_CFLAGS) -g -pg -O0 $(INCLUDE) -L. 
+CFLAGS = $(DEBUG_CFLAGS) -g -O2 $(INCLUDE) 
 
 LIB    = -lpthread -lm
-LFLAGS = -static-libgcc \
-	$(LIBTAUCS) $(LIBMETIS) $(LIBBLAS) \
-	$(or $(wildcard $(shell gcc -print-file-name=libgfortran.a))  ,-lgfortran) \
-	$(or $(wildcard $(shell gcc -print-file-name=libquadmath.a))  ,-lquadmath)
+#LFLAGS = -L/usr/lib -L../libs -L/usr/lib/atlas-base/atlas -L/usr/lib/atlas-base
+LFLAGS = $(LIBTAUCS) $(LIBMETIS) $(LIBLAPACK) $(LIBBLAS)
 BIN    = .
-CC     = gcc
 LD     = $(CC)
 FC     = gfortran
+LD     = gfortran -static-libgcc
 
 # F2C lib for OSX
 F2C =
@@ -29,15 +32,21 @@ else
 	endif
 endif
 
-## Whether to build universal openblas (when running CI on virtual platforms)
-#OPENBLASFLAG =
-#ifeq ($(CI), true)
-#        OPENBLASFLAG = "DYNAMIC_ARCH=0 TARGET=CORE2"
+# Whether to build universal openblas
+#OPENBLASFLAG :=
+#ifeq ($(UNIVERSAL_BLAS), 1)
+#        OPENBLASFLAG = "DYNAMIC_ARCH=1"
 #endif
 
+
 # Required static libs
+#LIBOPENBLASDIR = libs/openblas
+#LIBOPENBLAS = $(LIBOPENBLASDIR)/libopenblas.a 
+
 LIBF2CDIR = libs/f2c
 LIBF2C = $(LIBF2CDIR)/libf2c.a
+
+LIBBLAS = $(LIBLAPACKDIR)/librefblas.a
 
 LIBTAUCSDIR = libs/taucs
 LIBTAUCS = $(LIBTAUCSDIR)/lib/$(OSTYPE)/libtaucs.a
@@ -47,10 +56,6 @@ LIBMETIS = $(LIBMETISDIR)/libmetis.a
 
 LIBLAPACKDIR = libs/lapack
 LIBLAPACK = $(LIBLAPACKDIR)/liblapack.a
-
-#LIBBLASDIR = libs/openblas
-#LIBBLAS = $(LIBBLASDIR)/libblas.a
-LIBBLAS = $(LIBLAPACKDIR)/librefblas.a
 
 TEST   = test.o 
 
@@ -122,7 +127,7 @@ OBJ  =  caa_predict.o \
         dcdflib.o \
         GMRFLib-fortran.o 
 
-#.c.o : $(CC) -c $(ECA_CFLAGS) $<
+#.c.o : $(CC) -c $(CFLAGS) $<
 
 .PHONY : all caa clean cleanall
 
@@ -131,37 +136,33 @@ all: caa install
 caa: caa_main_model1 caa_main_model2 caa_main_predict
 
 caa_main_model1:        $(OBJ1) $(OBJ) $(LIBTAUCS)
-	$(LD) $(OBJ1) $(OBJ) -o $(BIN)/caa_main_model1 $(LFLAGS) $(LIB)
+	$(LD) $(CFLAGS)  $(OBJ1) $(OBJ) -o $(BIN)/caa_main_model1 $(LFLAGS) $(LIB)
 
 caa_main_model2:        $(OBJ2) $(OBJ) $(LIBTAUCS)
-	$(LD) $(OBJ2) $(OBJ) -o $(BIN)/caa_main_model2 $(LFLAGS) $(LIB)
+	$(LD) $(CFLAGS)  $(OBJ2) $(OBJ) -o $(BIN)/caa_main_model2 $(LFLAGS) $(LIB)
 
 caa_main_predict:       $(OBJ3) $(OBJ) $(LIBTAUCS)
-	$(LD) $(OBJ3) $(OBJ) -o $(BIN)/caa_main_predict $(LFLAGS) $(LIB)
-#	$(LD) $(ECA_CFLAGS)   $(OBJ) -o $(BIN)/predict $(LFLAGS) $(LIB)
+	$(LD) $(CFLAGS)  $(OBJ3) $(OBJ) -o $(BIN)/caa_main_predict $(LFLAGS) $(LIB)
+#	$(LD) $(CFLAGS)   $(OBJ) -o $(BIN)/predict $(LFLAGS) $(LIB)
 
-#$(LIBBLAS):
-#	>&2 echo "Building OpenBLAS"
-#	$(MAKE) -C $(LIBBLASDIR) $(OPENBLASFLAG) FC=$(FC) NO_LAPACKE=1 NO_SHARED=1 libs netlib
-#	cp -f $(LIBBLASDIR)/libopenblas*p*.a $(LIBBLASDIR)/libblas.a
 $(LIBBLAS): $(LIBLAPACK)
 
 $(LIBLAPACK):
 	$(MAKE) -C $(LIBLAPACKDIR) lapacklib blaslib
-	
+
 $(LIBMETIS):
-	>&2 echo "Building METIS"
-	CC="$(CC)" $(MAKE) -C $(LIBMETISDIR)/Lib
+	CC=$(CC) $(MAKE) -C $(LIBMETISDIR)/Lib
 
 $(F2C):
-	>&2 echo "Building F2C"
 	$(MAKE) -C $(LIBF2CDIR)
 
-$(LIBTAUCS): $(LIBBLAS) $(LIBMETIS) $(F2C)
-	>&2 echo "Building TAUCS"
-	CC="$(CC)" $(MAKE) -C $(LIBTAUCSDIR) -f configurator/makefile.unix
+$(LIBTAUCS): $(LIBLAPACK) $(LIBBLAS) $(LIBMETIS) $(F2C)
+	CC=$(CC) $(MAKE) -C $(LIBTAUCSDIR) -f configurator/makefile.unix
 	cd $(LIBTAUCSDIR); OSTYPE=$(OSTYPE) configurator/configurator
-	CC=gfortran $(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK="" LIBBLAS="../../$(LIBBLAS) -lpthread" LIBMETIS=../../$(LIBMETIS) LIBF77="$(F2C)"
+	CC=gfortran $(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK=../../$(LIBLAPACK) LIBBLAS=../../$(LIBBLAS) LIBMETIS=../../$(LIBMETIS) LIBF77="$(F2C)"
+
+#$(LIBOPENBLAS):
+#	$(MAKE) -C $(LIBOPENBLASDIR) libs $(OPENBLASFLAG) NO_SHARED=1
 
 caa_main_model1.o: caa.h caa_read_binary.h caa_estimate.h caa_main_model1.c
 caa_main_model2.o: caa.h caa_read_binary.h caa_estimate.h caa_main_model2.c
@@ -236,6 +237,6 @@ cleanall: clean
 	$(MAKE) -C $(LIBTAUCSDIR) clean
 	$(MAKE) -C $(LIBTAUCSDIR) distclean
 	$(MAKE) -C $(LIBMETISDIR) realclean
-#	$(MAKE) -C $(LIBBLASDIR) clean
+#	$(MAKE) -C $(LIBOPENBLASDIR) clean
 	$(MAKE) -C $(LIBLAPACKDIR) clean
 	$(MAKE) -C $(LIBF2CDIR) clean
