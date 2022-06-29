@@ -37,7 +37,7 @@ RANLIB    = echo
 #LIBLAPACK = external\\lib\\win32\\liblapack.lib
 
 #LIBMETIS  = external\\lib\\win32\\libmetis.lib
-#LIBF77    = external\\lib\\win32\\vcf2c.lib
+LIBF77    = -lf2c
 LIBC      =
 
 
