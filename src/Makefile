@@ -22,6 +22,7 @@ else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
 		OSTYPE = linux
+		F2C = ../../$(LIBF2C)
 	endif
 	ifeq ($(UNAME_S),Darwin)
 		OSTYPE = darwin_intel
