@@ -8,7 +8,7 @@ LFLAGS = -static-libgcc \
 	$(or $(wildcard $(shell gcc -print-file-name=libquadmath.a))  ,-lquadmath)
 BIN    = .
 CC     = gcc
-LD     = $(CC)
+LD     = gfortran
 FC     = gfortran
 
 # F2C lib for OSX
@@ -22,7 +22,6 @@ else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
 		OSTYPE = linux
-		F2C = ../../$(LIBF2C)
 	endif
 	ifeq ($(UNAME_S),Darwin)
 		OSTYPE = darwin_intel
