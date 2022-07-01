@@ -1,3 +1,6 @@
+#ifndef CAA_H_INCLUDED_
+#define CAA_H_INCLUDED_
+
 /*!
   \file caa.h
   \brief Main header file for the caa system
@@ -713,3 +716,5 @@ typedef struct
 
 
 
+
+#endif // include guard

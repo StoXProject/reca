@@ -1,3 +1,6 @@
+#ifndef CAA_CELL_CONSTR_H_INCLUDED_
+#define CAA_CELL_CONSTR_H_INCLUDED_
+
 int make_cell_constr_age(Data_age *i_D_age, Input_cov *i_cov);
 int re_make_cell_constr(Data_glm *i_glm);
 int make_cell_constr_lin(Data_lin *i_D_lin, Input_cov *i_int_cov, Input_cov *i_slp_cov);
@@ -24,3 +27,5 @@ int simulate_cell_effects_CC(Age_struct *i_age,Data_age *i_D_age,
 			     LW_struct *i_hsz,Data_lin *i_D_hsz,
 			     LW_struct *i_length_CC,Data_lin *i_D_lga_CC,
 			     LW_struct *i_weight_CC,Data_lin *i_D_wgl_CC);
+
+#endif // include guard

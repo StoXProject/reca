@@ -1,3 +1,6 @@
+#ifndef CAA_ROUTINES_H_INCLUDED_
+#define CAA_ROUTINES_H_INCLUDED_
+
 int makedata_age1(int i_nHaul,int i_nAges,int *i_a_vec,
 		  Input_cov *i_cov, int *i_num_adj_area,int *i_adj_area,
 		  Data_age **o_D_age,int i_fit);
@@ -68,3 +71,5 @@ int update_average_lin(int i_n,LW_struct *i_lin,Data_lin *i_D_lin,
 int update_mean(double *i_mean,double i_x,int i_n);
 double scale_proposal(double x, double f, double *la);
 void my_genmul(long n,double *p,long ncat,long *ix);
+
+#endif // include guard

@@ -1,3 +1,6 @@
+#ifndef CAA_SUBSTRUCT_H_INCLUDED_
+#define CAA_SUBSTRUCT_H_INCLUDED_
+
 /*!
   \file caa_substruct.h
   \brief Structs included in other structs defined in caa.h
@@ -227,3 +230,5 @@ typedef struct
   double    *ssq_fix;    
 } Data_glm;
 
+
+#endif // include guard

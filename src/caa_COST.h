@@ -1,3 +1,6 @@
+#ifndef CAA_COST_H_INCLUDED_
+#define CAA_COST_H_INCLUDED_
+
 #include <R.h>
 #include <Rdefines.h>
 
@@ -15,3 +18,5 @@ int make_suff_lga_COST(Data_orig *i_D_orig, Data_COST *i_D_COST, Data_lin *i_D_l
 		       Data_g_a *i_D_g_a, int i_start_h, int i_use_sim_age);
 int suff_g_a_COST(Data_orig *i_D_orig, Data_COST *i_D_COST, LW_struct *i_length, Data_age *i_D_age, 
 		  Data_lin *i_D_lga, Data_g_a *i_D_g_a, int i_start_h, int i_nHaul, double **o_suff);
+
+#endif // include guard

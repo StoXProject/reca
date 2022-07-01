@@ -1,3 +1,6 @@
+#ifndef CAA_CHOL_H_INCLUDED_
+#define CAA_CHOL_H_INCLUDED_
+
 /*!
   \file caa_chol.h
   \brief Declaring external functions defined in caa_chol.c
@@ -15,3 +18,5 @@ double cholssq0(double **a, int n, double b[]);
 double cholssqinv0(double **a, int n, double b[]);
 double chollogdet0(double **a, int n);
 
+
+#endif // include guard

@@ -1,3 +1,6 @@
+#ifndef CAA_READ_BINARY_H_INCLUDED_
+#define CAA_READ_BINARY_H_INCLUDED_
+
 int alloc_objects_age_lga(Input_common **o_inCommon, Data_orig **o_D_orig, Input_age **o_inAge,
 			  Input_lga **o_inLga, Data_CC **o_D_CC, Input_wgl **o_inHsz, Input_prior **o_inPrior);
 int re_alloc_objects_age_lga(Input_common **o_inCommon,Data_orig **o_D_orig, Input_age **o_inAge,
@@ -24,3 +27,5 @@ int re_readdata_cell(Input_cell **o_inCell);
 int add_object_info_age_lga(Input_common *i_inCommon, Data_orig *i_D_orig, Input_age *i_inAge,
 			    Input_lga *i_inLga, Input_wgl *i_inHsz);
 int add_object_info_wgl(Input_common *i_inCommon, Data_orig *i_D_orig, Input_wgl *i_inWgl);
+
+#endif // include guard

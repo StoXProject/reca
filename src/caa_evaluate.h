@@ -1,3 +1,6 @@
+#ifndef CAA_EVALUATE_H_INCLUDED_
+#define CAA_EVALUATE_H_INCLUDED_
+
 int init_evaluate(int i_nHaul,int i_ncat);
 int re_init_evaluate(int i_ncat);
 int calc_lik_age(Age_struct *i_age,Data_age *i_D_age, double *o_loglik);
@@ -19,3 +22,5 @@ int calc_resid_wgl(double *i_totlength, double *i_totweight,int *i_nFishBoat,
                    LW_struct *i_weight,Data_lin *i_D_wgl,
 		   double *o_resid);
 
+
+#endif // include guard

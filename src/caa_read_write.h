@@ -1,3 +1,6 @@
+#ifndef CAA_READ_WRITE_H_INCLUDED_
+#define CAA_READ_WRITE_H_INCLUDED_
+
 void write_warning(char *i_text);
 void write_output(char *filename, char *i_text);
 int printWarning(char *i_text);
@@ -36,3 +39,5 @@ int write_mcmc2(Data_lin *i_D_wgl, LW_struct *i_weight,
 int write_LW_struct(LW_struct *i_lin, Data_glm *i_glm, char *i_filename);
 int write_Data_lin(Data_lin *i_D_lga, int i_ncat, char *i_filename);
 int read_par_ascii_lga(FILE *fp,Data_glm *i_glm,Eff_str *i_par);
+
+#endif // include guard
