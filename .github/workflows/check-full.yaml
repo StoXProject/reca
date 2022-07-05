@@ -36,6 +36,7 @@ jobs:
     steps:
         
       - uses: actions/checkout@v2
+
       - name: Do autorelease increment, tagging, and environment setup
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: |
@@ -49,7 +50,8 @@ jobs:
           echo "PKG_FREL=${PKG_FILE_PREFIX}-R.${{ matrix.config.r }}-${{ runner.os }}${{ matrix.config.pkgext }}" >> $GITHUB_ENV
           echo "PKG_REPO=${GITHUB_WORKSPACE}" >> $GITHUB_ENV
         shell: bash
-	
+
+
       - uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
@@ -88,8 +90,6 @@ jobs:
           remotes::install_cran("git2r")
           remotes::install_cran("drat")
         shell: Rscript {0}
-
-
 
       - name: Session info
         run: |
