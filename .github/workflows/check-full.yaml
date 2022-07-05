@@ -97,7 +97,7 @@ jobs:
         shell: Rscript {0}
 
       # ECA wont build with the new Rtools toolchains. Pre-build.
-      - name Pre-Build ECA binaries
+      - name: Pre-Build ECA binaries
         if: runner.os == 'Windows'
         run: .github/buildCmdBinaries.sh
         shell: bash
