@@ -34,7 +34,6 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-        
       - uses: actions/checkout@v2
 
       - name: Do autorelease increment, tagging, and environment setup
@@ -50,7 +49,6 @@ jobs:
           echo "PKG_FREL=${PKG_FILE_PREFIX}-R.${{ matrix.config.r }}-${{ runner.os }}${{ matrix.config.pkgext }}" >> $GITHUB_ENV
           echo "PKG_REPO=${GITHUB_WORKSPACE}" >> $GITHUB_ENV
         shell: bash
-
 
       - uses: r-lib/actions/setup-r@v1
         with:
@@ -103,7 +101,6 @@ jobs:
         if: runner.os == 'Windows'
         run: .github/buildCmdBinaries.sh
         shell: bash
-
 
       - name: Check
         env:
