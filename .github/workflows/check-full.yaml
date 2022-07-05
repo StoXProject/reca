@@ -58,13 +58,6 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v1
 
-      # ECA wont build with the new Rtools toolchains. Pre-build.
-      - name: Pre-Build ECA binaries (Windows)
-       if: runner.os == 'Windows'
-       run: .github/buildCmdBinaries.sh
-       shell: bash
-
-
       - name: Query dependencies
         run: |
           install.packages('remotes')
@@ -95,6 +88,13 @@ jobs:
           remotes::install_cran("git2r")
           remotes::install_cran("drat")
         shell: Rscript {0}
+
+      # ECA wont build with the new Rtools toolchains. Pre-build.
+      - name: Pre-Build ECA binaries (Windows)
+       if: runner.os == 'Windows'
+       run: .github/buildCmdBinaries.sh
+       shell: bash
+
 
       - name: Session info
         run: |
