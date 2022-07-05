@@ -34,6 +34,13 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
+    
+    # ECA wont build with the new Rtools toolchains. Pre-build.
+     - name: Pre-Build ECA binaries (Windows)
+       if: runner.os == 'Windows'
+       run: .github/buildCmdBinaries.sh
+       shell: bash
+    
       - uses: actions/checkout@v2
 
       - name: Do autorelease increment, tagging, and environment setup
@@ -95,12 +102,6 @@ jobs:
           pkgs <- installed.packages()[, "Package"]
           sessioninfo::session_info(pkgs, include_base = TRUE)
         shell: Rscript {0}
-
-      # ECA wont build with the new Rtools toolchains. Pre-build.
-      - name: Pre-Build ECA binaries
-        if: runner.os == 'Windows'
-        run: .github/buildCmdBinaries.sh
-        shell: bash
 
       - name: Check
         env:
