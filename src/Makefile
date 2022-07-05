@@ -7,7 +7,7 @@ LFLAGS = -static-libgcc \
 	$(or $(wildcard $(shell gcc -print-file-name=libgfortran.a))  ,-lgfortran) \
 	$(or $(wildcard $(shell gcc -print-file-name=libquadmath.a))  ,-lquadmath)
 BIN    = .
-CC     = gcc-3
+CC     = gcc
 LD     = gfortran
 FC     = gfortran
 
