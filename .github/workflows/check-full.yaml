@@ -50,13 +50,6 @@ jobs:
           echo "PKG_REPO=${GITHUB_WORKSPACE}" >> $GITHUB_ENV
         shell: bash
 
-      - uses: r-lib/actions/setup-r@v1
-        with:
-          r-version: 36
-          rtools-version: 35
-          http-user-agent: ${{ matrix.config.http-user-agent }}
-
-
       # ECA wont build with the new Rtools toolchains. Pre-build.
       - name: Pre-Build ECA binaries
         if: runner.os == 'Windows'
