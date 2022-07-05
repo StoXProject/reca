@@ -96,6 +96,12 @@ jobs:
           sessioninfo::session_info(pkgs, include_base = TRUE)
         shell: Rscript {0}
 
+      # ECA wont build with the new Rtools toolchains. Pre-build.
+      - name Pre-Build ECA binaries
+        if: runner.os == 'Windows'
+        run: .github/buildCmdBinaries.sh
+        shell: bash
+
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_: false
