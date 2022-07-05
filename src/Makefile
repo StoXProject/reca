@@ -123,13 +123,15 @@ OBJ  =  caa_predict.o \
 .PHONY : all caa clean cleanall
 
 all: caa install
-
+	
 caa: 
 	#skip building if already built
-ifneq ("$(wildcard $(../inst/bin/caa_main_model1))","")
-	caa_main_model1 caa_main_model2 caa_main_predict
+ifeq ("$(wildcard $(../inst/bin/caa_main_model1))","")
+	make caa_main_model1 
+	make caa_main_model2 
+	make caa_main_predict
 else
-	echo "ECA (caa_main_model1) already built. Skipping ..."
+	$(info ECA  - caa_main_model1 - already built. Skipping ...)
 endif
 
 caa_main_model1:        $(OBJ1) $(OBJ) $(LIBTAUCS)
@@ -223,8 +225,13 @@ d_f1dim.o: d_f1dim.c
 d_brent.o: d_brent.c
 
 install: $(caa)
+ifeq ("$(wildcard $(../inst/bin/caa_main_model1))","")
 	mkdir -p ../inst/bin
 	install $(BIN)/caa_main_model1 $(BIN)/caa_main_model2 $(BIN)/caa_main_predict ../inst/bin/
+else
+	$(info ECA  - caa_main_model1 - already installed. Skipping ...)
+endif
+
 
 clean:
 	rm -f *.o
