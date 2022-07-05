@@ -126,11 +126,11 @@ all: caa install
 
 caa: 
 	#skip building if already built
-	ifneq ("$(wildcard $(../inst/bin/caa_main_model1))","")
-		caa_main_model1 caa_main_model2 caa_main_predict
-	else
-		echo "ECA (caa_main_model1) already built. Skipping ..."
-	endif
+ifneq ("$(wildcard $(../inst/bin/caa_main_model1))","")
+	caa_main_model1 caa_main_model2 caa_main_predict
+else
+	echo "ECA (caa_main_model1) already built. Skipping ..."
+endif
 
 caa_main_model1:        $(OBJ1) $(OBJ) $(LIBTAUCS)
 	$(LD) $(OBJ1) $(OBJ) -o $(BIN)/caa_main_model1 $(LFLAGS) $(LIB)
