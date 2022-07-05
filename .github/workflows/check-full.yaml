@@ -49,22 +49,7 @@ jobs:
           echo "PKG_FREL=${PKG_FILE_PREFIX}-R.${{ matrix.config.r }}-${{ runner.os }}${{ matrix.config.pkgext }}" >> $GITHUB_ENV
           echo "PKG_REPO=${GITHUB_WORKSPACE}" >> $GITHUB_ENV
         shell: bash
-
-      - uses: r-lib/actions/setup-r@v1
-        with:
-         r-version: 36
-         rtools-version: 35
-         http-user-agent: ${{ matrix.config.http-user-agent }}
-
-      - uses: r-lib/actions/setup-pandoc@v1
 	
-      # ECA wont build with the new Rtools toolchains. Pre-build.
-      - name: Pre-Build ECA binaries (Windows)
-       if: runner.os == 'Windows'
-       run: .github/buildCmdBinaries.sh
-       shell: bash
-
-
       - uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
@@ -72,6 +57,13 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
 
       - uses: r-lib/actions/setup-pandoc@v1
+
+      # ECA wont build with the new Rtools toolchains. Pre-build.
+      - name: Pre-Build ECA binaries (Windows)
+       if: runner.os == 'Windows'
+       run: .github/buildCmdBinaries.sh
+       shell: bash
+
 
       - name: Query dependencies
         run: |
