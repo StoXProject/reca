@@ -55,6 +55,8 @@ jobs:
          r-version: 36
          rtools-version: 35
          http-user-agent: ${{ matrix.config.http-user-agent }}
+
+      - uses: r-lib/actions/setup-pandoc@v1
 	
       # ECA wont build with the new Rtools toolchains. Pre-build.
       - name: Pre-Build ECA binaries (Windows)
