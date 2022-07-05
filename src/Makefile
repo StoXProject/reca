@@ -7,7 +7,7 @@ LFLAGS = -static-libgcc \
 	$(or $(wildcard $(shell gcc -print-file-name=libgfortran.a))  ,-lgfortran) \
 	$(or $(wildcard $(shell gcc -print-file-name=libquadmath.a))  ,-lquadmath)
 BIN    = .
-CC     = gcc
+CC     = gcc-3
 LD     = gfortran
 FC     = gfortran
 
@@ -124,7 +124,13 @@ OBJ  =  caa_predict.o \
 
 all: caa install
 
-caa: caa_main_model1 caa_main_model2 caa_main_predict
+caa: 
+	#skip building if already built
+	ifneq ("$(wildcard $(../inst/bin/caa_main_model1))","")
+		caa_main_model1 caa_main_model2 caa_main_predict
+	else
+		echo "ECA (caa_main_model1) already built. Skipping ..."
+	endif
 
 caa_main_model1:        $(OBJ1) $(OBJ) $(LIBTAUCS)
 	$(LD) $(OBJ1) $(OBJ) -o $(BIN)/caa_main_model1 $(LFLAGS) $(LIB)
