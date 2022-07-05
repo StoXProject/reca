@@ -89,11 +89,6 @@ jobs:
           remotes::install_cran("drat")
         shell: Rscript {0}
 
-      # ECA wont build with the new Rtools toolchains. Pre-build.
-      - name: Pre-Build ECA binaries (Windows)
-       if: runner.os == 'Windows'
-       run: .github/buildCmdBinaries.sh
-       shell: bash
 
 
       - name: Session info
