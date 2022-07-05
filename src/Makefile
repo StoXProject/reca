@@ -15,8 +15,10 @@ FC     = gfortran
 F2C =
 
 # OS detection (Windows is considered Linux since we use Mingw)
+# use old compiler for windows buils
 OSTYPE = linux
 ifeq ($(OS),Windows_NT)
+	CC = gcc-4
 	OSTYPE = linux
 else
 	UNAME_S := $(shell uname -s)
