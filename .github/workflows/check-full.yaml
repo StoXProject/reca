@@ -32,7 +32,7 @@ jobs:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       RSPM: ${{ matrix.config.rspm }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-
+	
     steps:
       - uses: actions/checkout@v2
 
@@ -52,8 +52,8 @@ jobs:
 
       # ECA wont build with the new Rtools toolchains. Pre-build.
       - name: Pre-Build ECA binaries
-      if: runner.os == 'Windows'
-      run: .github/buildCmdBinaries.sh
+        if: runner.os == 'Windows'
+        run: .github/buildCmdBinaries.sh
         uses: egor-tensin/setup-clang@v1
         with:
           version: 4.0
