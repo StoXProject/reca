@@ -52,8 +52,12 @@ jobs:
 
       # ECA wont build with the new Rtools toolchains. Pre-build.
       - name: Pre-Build ECA binaries
-        if: runner.os == 'Windows'
-        run: .github/buildCmdBinaries.sh
+      if: runner.os == 'Windows'
+      run: .github/buildCmdBinaries.sh
+        uses: egor-tensin/setup-clang@v1
+        with:
+          version: 4.0
+          platform: x64
         shell: bash
 
 

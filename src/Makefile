@@ -164,6 +164,8 @@ $(LIBTAUCS): $(LIBBLAS) $(LIBMETIS) $(F2C)
 	cd $(LIBTAUCSDIR); OSTYPE=$(OSTYPE) configurator/configurator
 	CC=gfortran $(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK="" LIBBLAS="../../$(LIBBLAS) -lpthread" LIBMETIS=../../$(LIBMETIS) LIBF77="$(F2C)"
 
+	#skip building if already built
+ifeq ("$(wildcard $(../inst/bin/caa_main_model1))","")
 caa_main_model1.o: caa.h caa_read_binary.h caa_estimate.h caa_main_model1.c
 caa_main_model2.o: caa.h caa_read_binary.h caa_estimate.h caa_main_model2.c
 caa_main_predict.o: caa.h caa_read_binary.h caa_predict.h caa_main_predict.c
@@ -224,6 +226,10 @@ d_linmin.o: d_linmin.c
 d_mnbrak.o: d_mnbrak.c
 d_f1dim.o: d_f1dim.c
 d_brent.o: d_brent.c
+else
+	$(info ECA  - caa_main_model1 - already built. Skipping ...)
+endif
+
 
 install: $(caa)
 ifeq ("$(wildcard $(../inst/bin/caa_main_model1))","")
