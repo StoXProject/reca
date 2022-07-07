@@ -124,10 +124,7 @@ OBJ  =  caa_predict.o \
 
 all: caa install
 	
-caa: 
-	make caa_main_model1 
-	make caa_main_model2 
-	make caa_main_predict
+caa: caa_main_model1 caa_main_model2 caa_main_predict
 
 caa_main_model1:        $(OBJ1) $(OBJ) $(LIBTAUCS)
 	$(LD) $(OBJ1) $(OBJ) -o $(BIN)/caa_main_model1 $(LFLAGS) $(LIB)
