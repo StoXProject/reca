@@ -8,7 +8,7 @@ LFLAGS = -static-libgcc \
 	$(or $(wildcard $(shell gcc -print-file-name=libquadmath.a))  ,-lquadmath)
 BIN    = .
 CC     = gcc
-LD     = gfortran
+LD     = $(CC)
 FC     = gfortran
 
 # F2C lib for OSX
