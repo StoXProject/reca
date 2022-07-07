@@ -49,10 +49,11 @@ jobs:
           echo "PKG_REPO=${GITHUB_WORKSPACE}" >> $GITHUB_ENV
         shell: bash
 
-      - uses: egor-tensin/setup-clang@v1
+      - uses: r-lib/actions/setup-r@v1
         with:
-          version: 4.0
-          platform: x64
+          r-version: 36
+          rtools-version: 35
+          http-user-agent: ${{ matrix.config.http-user-agent }}
 
 
       # ECA wont build with the new Rtools toolchains. Pre-build.
