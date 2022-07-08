@@ -19,17 +19,6 @@
 #include "caa_input.h"
 #include "caa_estimate.h"
 
-#ifdef LOG_FILE
-extern FILE     *g_caa_log; 
-#endif
-
-extern FILE     *g_caa_mcmc1; 
-extern FILE     *g_caa_mcmc2; 
-extern FILE     *g_caa_mcmc_hsz; 
-extern FILE     *g_caa_mcmc_hsz_eff;
-
-
-
 /*!
   \brief Fitting age and lga model through MCMC simulations.
   \author Geir Storvik and Hanne Rognebakke

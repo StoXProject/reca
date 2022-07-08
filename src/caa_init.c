@@ -19,11 +19,6 @@ double Qfunc_age_ran(int node, int nnode, char *arg);
 double Qfunc_length(int node, int nnode, char *arg);
 double Qfunc_weight(int node, int nnode,char *arg);
 
-#ifdef LOG_FILE
-extern FILE     *g_caa_log;
-#endif
-
-
 /*!
   \brief Memory allocation and initial values for age and lga models
   \author Geir Storvik

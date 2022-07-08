@@ -18,11 +18,6 @@ static int (*s_calc_g_a)(int i_ncat,double *i_a_vec,double *i_par,double *o_g);
 
 static double   *s_g_a;
 
-#ifdef LOG_FILE
-extern FILE     *g_caa_log;
-#endif
-
-
 /*!
   \author Geir Storvik
   \brief Allocates space for routines used to sample non-linear part of lga-model

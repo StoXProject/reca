@@ -19,15 +19,6 @@ static int      s_N_gauher;  /*!< Number of nodes in Gauss Hermite quadrature */
 static double  *s_gauher_x;  /*!< Abscissas in Gauss Hermite quadrature */
 static double  *s_gauher_w;  /*!< Weights in Gauss Hermite quadrature */
 
-
-#ifdef LOG_FILE
-extern FILE     *g_caa_log; 
-#endif
-extern FILE     *g_caa_mcmc1;
-extern FILE     *g_caa_mcmc2;
-extern FILE     *g_caa_mcmc_hsz;
- 
-
 /*!
   \author Geir Storvik and Hanne Rognebakke
   \brief Estimates catch-at-age for simulated parameters and random effects.

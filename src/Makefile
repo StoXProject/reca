@@ -56,7 +56,8 @@ OBJ2   = caa_main_model2.o
 
 OBJ3   = caa_main_predict.o 
 
-OBJ  =  caa_predict.o \
+OBJ  =  caa.o \
+    caa_predict.o \
 	caa_estimate.o \
 	caa_cell_constr.o \
         caa_chol.o \
@@ -155,6 +156,7 @@ $(LIBTAUCS): $(LIBBLAS) $(LIBMETIS) $(F2C)
 	cd $(LIBTAUCSDIR); OSTYPE=$(OSTYPE) configurator/configurator
 	CC=gfortran $(MAKE) -C $(LIBTAUCSDIR) LIBLAPACK="" LIBBLAS="../../$(LIBBLAS) -lpthread" LIBMETIS=../../$(LIBMETIS) LIBF77="$(F2C)"
 
+caa.o : caa.h caa.c
 caa_main_model1.o: caa.h caa_read_binary.h caa_estimate.h caa_main_model1.c
 caa_main_model2.o: caa.h caa_read_binary.h caa_estimate.h caa_main_model2.c
 caa_main_predict.o: caa.h caa_read_binary.h caa_predict.h caa_main_predict.c

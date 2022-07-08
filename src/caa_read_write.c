@@ -5,13 +5,6 @@
 #include "caa_read_write.h"
 #include "caa_routines.h"
 
-#ifdef LOG_FILE
-extern FILE     *g_caa_log; 
-#endif
-extern FILE     *g_caa_mcmc1;
-extern FILE     *g_caa_mcmc2;
-
-
 /*!
   \author Geir Storvik
   \brief Writes a warning message to screen
