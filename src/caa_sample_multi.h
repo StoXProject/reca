@@ -1,3 +1,6 @@
+#ifndef CAA_SAMPLE_MULTI_H_INCLUDED_
+#define CAA_SAMPLE_MULTI_H_INCLUDED_
+
 int sample_multi_initialize(int i_ncat);
 int sample_multi_re_initialize();
 int age_haul_modes(int i_start_h,int i_stop_h,Age_struct *i_age,Data_age *i_D_age);
@@ -24,3 +27,5 @@ int sample_age_alpha(Age_struct *i_age,Data_age *i_D_age,int i_start_h,int i_acc
 		     int i_it,int *acc_h,int i_write_alpha);
 int sample_precision_age_haul(int i_start_h,Eff_str *i_par,
 			      double **i_alpha,Data_glm *i_glm,int i_nHaul);
+
+#endif // include guard

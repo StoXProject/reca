@@ -1,3 +1,6 @@
+#ifndef CAA_INIT_H_INCLUDED_
+#define CAA_INIT_H_INCLUDED_
+
 int initialize_model1(int i_seed, int *i_num_par,
 		      Data_age *i_D_age, Age_struct **o_age, Age_struct **o_age_mean,
 		      Data_lin *i_D_lga, LW_struct **o_length, LW_struct **o_length_mean,
@@ -63,3 +66,5 @@ int re_init_lin(Data_lin *i_D_lin,LW_struct **o_lin,LW_struct **o_lin_mean);
 int alloc_lin(Data_lin *i_D_lin,LW_struct **o_lin);
 int re_alloc_lin(Data_lin *i_D_lin,LW_struct **o_lin);
 int init_lin_par(LW_struct *i_lin,Data_lin *i_D_lin);
+
+#endif // include guard

@@ -1,3 +1,6 @@
+#ifndef CAA_MCMC_H_INCLUDED_
+#define CAA_MCMC_H_INCLUDED_
+
 int MCMC_model1_init(Data_orig *i_D_orig, Data_age *i_D_age, Age_struct *i_age,
 		     Data_lin *i_D_lga, LW_struct *i_length, 
 		     Data_lin *i_D_lga_CC, LW_struct *i_length_CC,
@@ -42,3 +45,5 @@ int MCMC_model2_it(int start_h, int it_tot,
 		   int i_coastal_cod);
 int MCMC_it_wgl(Data_lin *i_D_wgl,LW_struct *i_weight,int start_h);
 int MCMC_it_lga_fixed(Data_lin *i_D_lga,Data_g_a *i_D_g_a,LW_struct *i_length,int start_h,int i_it);
+
+#endif // include guard

@@ -12,15 +12,6 @@
 #include "caa_read_binary.h"
 #include "caa_read_write.h"
 
-#ifdef LOG_FILE
-extern FILE     *g_caa_log; 
-#endif
- 
-
-
-
-
-
 /*!
   \brief Fitting age and lga model through MCMC simulations.
   \author Hanne Rognebakke

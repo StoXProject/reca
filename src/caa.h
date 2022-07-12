@@ -1,3 +1,6 @@
+#ifndef CAA_H_INCLUDED_
+#define CAA_H_INCLUDED_
+
 /*!
   \file caa.h
   \brief Main header file for the caa system
@@ -57,13 +60,13 @@
 //#define  DEBUG_GAUSS_CONSTR  0 //For debugging simulation of linear parts of model
 
 
-FILE       *g_caa_log;    /*!< file-unit for log-file */
-FILE       *g_caa_alpha;  /*!< file-unit for writing alpha's to file, for debugging */
+extern FILE       *g_caa_log;    /*!< file-unit for log-file */
+extern FILE       *g_caa_alpha;  /*!< file-unit for writing alpha's to file, for debugging */
 
-FILE       *g_caa_mcmc1;  /*!< file-unit for fit parameters from age and lga model */
-FILE       *g_caa_mcmc2;  /*!< file-unit for fit parameters from wgl model */
-FILE       *g_caa_mcmc_hsz; /*!< file-unit for part of fit parameters from haulsize regression */
-FILE       *g_caa_mcmc_hsz_eff; /*!< file-unit for haul effects from haulsize regression */
+extern FILE       *g_caa_mcmc1;  /*!< file-unit for fit parameters from age and lga model */
+extern FILE       *g_caa_mcmc2;  /*!< file-unit for fit parameters from wgl model */
+extern FILE       *g_caa_mcmc_hsz; /*!< file-unit for part of fit parameters from haulsize regression */
+extern FILE       *g_caa_mcmc_hsz_eff; /*!< file-unit for haul effects from haulsize regression */
 
 /*
 #define MEMCHK(ptr) GMRFLib_ASSERT(ptr,GMRFLib_EMEMORY)
@@ -713,3 +716,5 @@ typedef struct
 
 
 
+
+#endif // include guard

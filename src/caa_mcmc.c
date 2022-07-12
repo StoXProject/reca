@@ -16,14 +16,6 @@
 #include "caa_evaluate.h"
 //#include "caa_COST.h"
 
-#ifdef LOG_FILE
-extern FILE     *g_caa_log;
-#endif
-
-extern FILE     *g_caa_mcmc_hsz; 
-  
-  
-
 /*!
   \author Geir Storvik
   \brief  Initialization for MCMC simulations of age and lga model

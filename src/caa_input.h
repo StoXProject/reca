@@ -1,3 +1,6 @@
+#ifndef CAA_INPUT_H_INCLUDED_
+#define CAA_INPUT_H_INCLUDED_
+
 int write_input_model1(FILE *fp, Data_orig *i_D_orig, Input_common *i_inCommon, Input_age *i_inAge,
 		       Input_lga *i_inLga, Input_prior *i_inPrior, Data_CC *i_D_CC);
 int write_input_model2(FILE *fp, Data_orig *i_D_orig, Input_common *i_inCommon, Input_wgl *i_inWgl,
@@ -21,3 +24,5 @@ int read_inData(FILE *fp, Data_orig **o_D_orig);
 int re_read_inData(Data_orig **o_D_orig);
 int read_inCommon(FILE *fp, Input_common **o_inCommon);
 int re_read_inCommon(Input_common **o_inCommon);
+
+#endif // include guard

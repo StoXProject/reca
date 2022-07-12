@@ -26,16 +26,6 @@ int compare(int *i_x,int *i_y);
 static int update_average_par(int i_n,int i_ncat,Eff_str *i_par,Eff_str *x_par_mean,
                               int i_nxcov,Data_cov **i_xcov);
 
-#ifdef LOG_FILE
-extern FILE     *g_caa_log;
-#endif
-
-extern FILE     *g_caa_mcmc1;
-extern FILE     *g_caa_mcmc2;
-
-extern FILE     *g_caa_mcmc_hsz_eff;
-
-
 /*!
   \author Geir Storvik
   \brief Makes a struct of type containing model and covariates for age model

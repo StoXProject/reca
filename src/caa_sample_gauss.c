@@ -23,13 +23,7 @@ static int make_Q_inc_gauss(int i_nNodes,int i_ncat,int i_nxcov,int i_start_h,in
 		            Data_cov **i_xcov,int ***i_node,int **i_in_gr,int **o_Q_inc);
 static double draw_spatial_ar(Data_cov *i_xcov,Eff_str *i_par,int i_ncat,int i_i);
 
-#ifdef LOG_FILE
-extern FILE     *g_caa_log;
-#endif
-
 #define NPROB 100 /*!< Number of possible values for ar-coef, see draw_spatial_ar */
-
-
 
 /*!
   \brief Making graph for simulation from multivariate gaussian distribution

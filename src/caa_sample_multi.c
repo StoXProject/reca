@@ -47,11 +47,6 @@ static double  *s_gauher_w;  /*!< Weights in Gauss Hermite quadrature */
 
 //#define AGE_TEST 1
 
-#ifdef LOG_FILE
-extern FILE     *g_caa_log;
-extern FILE     *g_caa_alpha;
-#endif
-
 /*!
   \author Geir Storvik
   \brief Allocates space for routines used to sample non-linear part of age-model
