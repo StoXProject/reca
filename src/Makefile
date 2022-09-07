@@ -32,7 +32,7 @@ endif
 # Whether to build universal openblas
 OPENBLASFLAG =
 ifeq ($(CI), true)
-        OPENBLASFLAG = "DYNAMIC_ARCH=1"
+        OPENBLASFLAG = "DYNAMIC_ARCH=1 TARGET=GENERIC"
 endif
 
 # Required static libs
