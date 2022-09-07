@@ -73,6 +73,8 @@ jobs:
       - name: Install system dependencies
         if: runner.os == 'Linux'
         run: |
+          #set CPU target for openBlas, because it doesnt recognize VM architecture
+          export TARGET=NEHALEM 
           while read -r cmd
           do
             eval sudo $cmd
@@ -80,8 +82,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          #set CPU target for openBlas, because it doesnt recognize VM architecture
-          export TARGET=NEHALEM 
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
           remotes::install_cran("git2r")
