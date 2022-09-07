@@ -47,7 +47,7 @@ jobs:
           echo "PKG_REPO=${GITHUB_WORKSPACE}" >> $GITHUB_ENV
         shell: bash
 
-      - uses: r-lib/actions/setup-r@v1
+      - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
           rtools-version: ${{ matrix.config.rtools }}
@@ -80,6 +80,8 @@ jobs:
 
       - name: Install dependencies
         run: |
+	  #set CPU target for openBlas, because it doesnt recognize VM architecture
+	    export TARGET=NEHALEM 
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
           remotes::install_cran("git2r")
