@@ -80,8 +80,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-	  #set CPU target for openBlas, because it doesnt recognize VM architecture
-	    export TARGET=NEHALEM 
+          #set CPU target for openBlas, because it doesnt recognize VM architecture
+          export TARGET=NEHALEM 
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
           remotes::install_cran("git2r")
