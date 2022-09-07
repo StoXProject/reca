@@ -25,14 +25,17 @@ ifeq ($(NO_FORTRAN), 1)
 define NOFORTRAN
 1
 endef
-define NO_LAPACK
+ifneq ($(NO_LAPACK), 1)
+define C_LAPACK
 1
 endef
+endif
 export NOFORTRAN
 export NO_LAPACK
+export C_LAPACK
 endif
 
-LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast,$(LAPACK_FFLAGS))
+LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast -O -Og -Os,$(LAPACK_FFLAGS))
 
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench cpp_thread_test
 
@@ -59,6 +62,9 @@ endif
 	@$(CC) --version > /dev/null 2>&1;\
 	if [ $$? -eq 0 ]; then \
 	   cverinfo=`$(CC) --version | sed -n '1p'`; \
+	   if [ -z "$${cverinfo}" ]; then \
+	   cverinfo=`$(CC) --version | sed -n '2p'`; \
+	   fi; \
 	   echo "  C compiler       ... $(C_COMPILER)  (cmd & version : $${cverinfo})";\
 	else  \
 	   echo "  C compiler       ... $(C_COMPILER)  (command line : $(CC))";\
@@ -67,6 +73,9 @@ ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	@$(FC) --version > /dev/null 2>&1;\
 	if [ $$? -eq 0 ]; then \
 	   fverinfo=`$(FC) --version | sed -n '1p'`; \
+	   if [ -z "$${fverinfo}" ]; then \
+	   fverinfo=`$(FC) --version | sed -n '2p'`; \
+	   fi; \
 	   echo "  Fortran compiler ... $(F_COMPILER)  (cmd & version : $${fverinfo})";\
 	else \
 	   echo "  Fortran compiler ... $(F_COMPILER)  (command line : $(FC))";\
@@ -140,12 +149,16 @@ ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 ifndef NO_FBLAS
 	$(MAKE) -C test all
 endif
+endif
+ifneq ($(ONLY_CBLAS), 1)
 	$(MAKE) -C utest all
+endif
 ifneq ($(NO_CBLAS), 1)
+ifneq ($(ONLY_CBLAS), 1)
 	$(MAKE) -C ctest all
+endif
 ifeq ($(CPP_THREAD_SAFETY_TEST), 1)
 	$(MAKE) -C cpp_thread_test all
-endif
 endif
 endif
 
@@ -154,14 +167,13 @@ ifeq ($(CORE), UNKNOWN)
 	$(error OpenBLAS: Detecting CPU failed. Please set TARGET explicitly, e.g. make TARGET=your_cpu_target. Please read README for the detail.)
 endif
 ifeq ($(NOFORTRAN), 1)
-	$(info OpenBLAS: Detecting fortran compiler failed. Cannot compile LAPACK. Only compile BLAS.)
+	$(info OpenBLAS: Detecting fortran compiler failed. Can only compile BLAS and f2c-converted LAPACK.)
 endif
 ifeq ($(NO_STATIC), 1)
 ifeq ($(NO_SHARED), 1)
 	$(error OpenBLAS: neither static nor shared are enabled.)
 endif
 endif
-	@-ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
 	@for d in $(SUBDIRS) ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d $(@F) || exit 1 ; \
@@ -190,6 +202,7 @@ endif
 ifdef USE_THREAD
 	@echo USE_THREAD=$(USE_THREAD) >>  Makefile.conf_last
 endif
+	@-ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
 	@touch lib.grd
 
 prof : prof_blas prof_lapack
@@ -235,18 +248,13 @@ hpl_p :
 	fi; \
 	done
 
-ifeq ($(NO_LAPACK), 1)
-netlib :
-
-else
 netlib : lapack_prebuild
-ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
+ifneq ($(NO_LAPACK), 1)
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapacklib
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) tmglib
 endif
 ifneq ($(NO_LAPACKE), 1)
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapackelib
-endif
 endif
 
 ifeq ($(NO_LAPACK), 1)
@@ -261,9 +269,9 @@ prof_lapack : lapack_prebuild
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapack_prof
 
 lapack_prebuild :
-ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
+ifeq ($(NO_LAPACK), $(filter 0,$(NO_LAPACK)))
 	-@echo "FC          = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "FFLAGS      = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "override FFLAGS      = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "FFLAGS_DRV  = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "POPTS       = $(LAPACK_FPFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "FFLAGS_NOOPT       = -O0 $(LAPACK_NOOPT)" >> $(NETLIB_LAPACK_DIR)/make.inc
