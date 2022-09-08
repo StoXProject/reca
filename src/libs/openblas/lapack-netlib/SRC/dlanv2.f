@@ -109,8 +109,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup doubleOTHERauxiliary
 *
 *> \par Further Details:
@@ -127,10 +125,9 @@
 *  =====================================================================
       SUBROUTINE DLANV2( A, B, C, D, RT1R, RT1I, RT2R, RT2I, CS, SN )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   A, B, C, CS, D, RT1I, RT1R, RT2I, RT2R, SN
@@ -139,7 +136,7 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      DOUBLE PRECISION   ZERO, HALF, ONE
+      DOUBLE PRECISION   ZERO, HALF, ONE, TWO
       PARAMETER          ( ZERO = 0.0D+0, HALF = 0.5D+0, ONE = 1.0D+0,
      $                     TWO = 2.0D0 )
       DOUBLE PRECISION   MULTPL

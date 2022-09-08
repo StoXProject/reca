@@ -33,13 +33,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef COMMON_ARM64
 #define COMMON_ARM64
 
+#ifdef C_MSVC
+#include <intrin.h>
+#define MB __dmb(_ARM64_BARRIER_ISH)
+#define WMB __dmb(_ARM64_BARRIER_ISHST)
+#define RMB __dmb(_ARM64_BARRIER_ISHLD)
+#else
 #define MB   __asm__ __volatile__ ("dmb  ish" : : : "memory")
 #define WMB  __asm__ __volatile__ ("dmb  ishst" : : : "memory")
 #define RMB  __asm__ __volatile__ ("dmb  ishld" : : : "memory")
+#endif
 
 #define INLINE inline
 
-#ifdef F_INTERFACE_FLANG
+#if defined( F_INTERFACE_FLANG) || defined(F_INTERFACE_PGI)
 #define RETURN_BY_STACK
 #else
 #define RETURN_BY_COMPLEX
@@ -53,6 +60,7 @@ static void __inline blas_lock(volatile BLASULONG *address){
   BLASULONG ret;
 
   do {
+    #ifndef C_MSVC
     __asm__ __volatile__(
 			 "mov	x4, #1							\n\t"
 			 "sevl								\n\t"
@@ -70,7 +78,10 @@ static void __inline blas_lock(volatile BLASULONG *address){
 
 
     );
-
+    #else
+      while (*address) {YIELDING;}
+      ret=InterlockedExchange64((volatile LONG64 *)(address), 1);
+    #endif
 
   } while (ret);
 
@@ -80,6 +91,14 @@ static void __inline blas_lock(volatile BLASULONG *address){
 
 #if !defined(OS_DARWIN) && !defined (OS_ANDROID)
 static __inline BLASULONG rpcc(void){
+  #ifdef C_MSVC
+    const int64_t pmccntr_el0 = (((3 & 1) << 14) |  // op0
+        ((3 & 7) << 11) |  // op1
+        ((9 & 15) << 7) |  // crn
+        ((13 & 15) << 3) | // crm
+        ((0 & 7) << 0));   // op2
+    return _ReadStatusReg(pmccntr_el0);
+  #else
   BLASULONG ret = 0;
   blasint shift;
  
@@ -87,6 +106,7 @@ static __inline BLASULONG rpcc(void){
   __asm__ __volatile__ ("mrs %0,cntfrq_el0; clz %w0, %w0":"=&r"(shift));
 
   return ret << shift;
+  #endif
 }
 
 #define RPCC_DEFINED
@@ -120,7 +140,7 @@ static inline int blas_quickdivide(blasint x, blasint y){
 	.text ;
 	.p2align 2 ;
 	.global	REALNAME ;
-#ifndef __APPLE__
+#if !defined(__APPLE__) && !defined(_WIN32)
 	.type	REALNAME, %function ;
 #endif
 REALNAME:
