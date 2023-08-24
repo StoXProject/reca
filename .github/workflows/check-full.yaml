@@ -21,7 +21,9 @@ jobs:
         #commenting out working images while fixing the rest
           #- {os: macOS-latest,   r: '4.0',  pkgext: '.tgz'}
           #- {os: macOS-latest,   r: '4.1',  pkgext: '.tgz'}
-          #- {os: macOS-latest,   r: '4.2',  pkgext: '.tgz'}
+          - {os: macOS-latest,   r: '4.2',  pkgext: '.tgz'}
+          
+          # seems to not build with macOS-latest and r 4.3 / next, due to issue in compiling libmetis (errors with implicit function declarations in C99). This works on macOS-latest with other R versions.
           - {os: macOS-latest,   r: '4.3', pkgext: '.tgz'}
           - {os: macOS-latest,   r: 'next',  pkgext: '.tgz'}
           #- {os: windows-latest, r: '4.0',  pkgext: '.zip'}
