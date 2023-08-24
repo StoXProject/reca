@@ -18,18 +18,19 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS-latest,   r: '4.0',  pkgext: '.tgz'}
-          - {os: macOS-latest,   r: '4.1',  pkgext: '.tgz'}
-          - {os: macOS-latest,   r: '4.2',  pkgext: '.tgz'}
+        #commenting out working images while fixing the rest
+          #- {os: macOS-latest,   r: '4.0',  pkgext: '.tgz'}
+          #- {os: macOS-latest,   r: '4.1',  pkgext: '.tgz'}
+          #- {os: macOS-latest,   r: '4.2',  pkgext: '.tgz'}
           - {os: macOS-latest,   r: '4.3', pkgext: '.tgz'}
           - {os: macOS-latest,   r: 'next',  pkgext: '.tgz'}
-          - {os: windows-latest, r: '4.0',  pkgext: '.zip'}
-          - {os: windows-latest, r: '4.1',  pkgext: '.zip'}
-          - {os: windows-latest, r: '4.2',  pkgext: '.zip'}
-          - {os: windows-latest, r: '4.3', pkgext: '.zip'}
-          - {os: windows-latest, r: 'next',  pkgext: '.zip'}
-          - {os: ubuntu-20.04,   r: 'release', pkgext: '.tar.gz', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
-          - {os: ubuntu-20.04,   r: 'next',  pkgext: '.tar.gz', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
+          #- {os: windows-latest, r: '4.0',  pkgext: '.zip'}
+          #- {os: windows-latest, r: '4.1',  pkgext: '.zip'}
+          #- {os: windows-latest, r: '4.2',  pkgext: '.zip'}
+          #- {os: windows-latest, r: '4.3', pkgext: '.zip'}
+          #- {os: windows-latest, r: 'next',  pkgext: '.zip'}
+          #- {os: ubuntu-20.04,   r: 'release', pkgext: '.tar.gz', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
+          #- {os: ubuntu-20.04,   r: 'next',  pkgext: '.tar.gz', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -104,6 +105,11 @@ jobs:
           _R_CHECK_CRAN_INCOMING_: false
         run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "error", check_dir = "check")
         shell: Rscript {0}
+
+      - name: Show Rcheck output
+        if: always()
+        run: find check -name '00install.out*' -exec cat '{}' \; || true
+        shell: bash
 
       - name: Show testthat output
         if: always()
