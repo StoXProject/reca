@@ -23,8 +23,8 @@ jobs:
           - {os: macOS-latest,   r: '4.2',  pkgext: '.tgz'}
           
           # seems to not build with macOS-latest and r 4.3 / next, due to issue in compiling libmetis (errors with implicit function declaration in C99 (function __GKfree)). This works on macOS-latest with other R versions.
-          - {os: macOS-latest,   r: '4.3', pkgext: '.tgz'}
-          - {os: macOS-latest,   r: 'next',  pkgext: '.tgz'}
+          #- {os: macOS-latest,   r: '4.3', pkgext: '.tgz'}
+          #- {os: macOS-latest,   r: 'next',  pkgext: '.tgz'}
           
           - {os: windows-latest, r: '4.0',  pkgext: '.zip'}
           - {os: windows-latest, r: '4.1',  pkgext: '.zip'}
