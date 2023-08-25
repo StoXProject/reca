@@ -154,11 +154,11 @@ jobs:
       #     path: '${{ github.workspace }}/*${{ matrix.config.pkgext }}'
 
       - name: Upload to DRAT repo
-        if: (runner.os == 'Windows' || runner.os == 'macOS' || (runner.os == 'Linux' && matrix.config.r == 'release')) && github.event_name == 'push' && github.ref == 'refs/heads/master'
+        if: ( (runner.os == 'Windows' && matrix.config.r != 'next') || (runner.os == 'macOS' && matrix.config.r != 'next') || (runner.os == 'Linux' && matrix.config.r == 'next') ) && github.event_name == 'push' && github.ref == 'refs/heads/master'
         env:
           BUILD_NUMBER: ${{ github.sha  }}
           DRAT_DEPLOY_TOKEN: ${{ secrets.DRAT_DEPLOY_TOKEN }}
-        run: . deploy.sh
+        run: . repo_deploy.sh
         shell: bash
 
       - name: Create release and upload files
