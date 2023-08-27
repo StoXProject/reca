@@ -24,8 +24,8 @@ jobs:
           - {os: macOS-latest,   r: '4.2',  pkgext: '.tgz'}
           
           # seems to not build with macOS-latest and r 4.3 / next, due to issue in compiling libmetis (errors with implicit function declaration in C99 (function __GKfree)). This works on macOS-latest with other R versions.
-          #- {os: macOS-latest,   r: '4.3', pkgext: '.tgz'}
-          #- {os: macOS-latest,   r: 'next',  pkgext: '.tgz'}
+          - {os: macOS-latest,   r: '4.3', pkgext: '.tgz'}
+          - {os: macOS-latest,   r: 'next',  pkgext: '.tgz'}
           
           - {os: windows-latest, r: '3.6',  pkgext: '.zip'}
           - {os: windows-latest, r: '4.0',  pkgext: '.zip'}
@@ -62,11 +62,24 @@ jobs:
           echo "PKG_FREL=${PKG_FILE_PREFIX}-R.${{ matrix.config.r }}-${{ runner.os }}${{ matrix.config.pkgext }}" >> $GITHUB_ENV
           echo "PKG_REPO=${GITHUB_WORKSPACE}" >> $GITHUB_ENV
         shell: bash
-      - uses: r-lib/actions/setup-r@v2
+        
+      # use old rtools version for macOs R 4.3, to avoid build errors with libmetis
+      - name: setup R on macOS w R_4_3  
+        if: (runner.os == 'macOS' && matrix.config.r == '4.3')
+        uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
           rtools-version: ${{ matrix.config.rtools }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
+          
+      - name: setup R
+        if: (runner.os != 'macOS' || matrix.config.r != '4.3')
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          rtools-version: "4.2"
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+
 
       - uses: r-lib/actions/setup-pandoc@v2
 
