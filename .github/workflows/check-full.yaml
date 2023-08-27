@@ -117,7 +117,6 @@ jobs:
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_: false
-          CFLAGS: -Wno-implicit-function-declaration #needed for taucs on apple gcc with R 3.4 (macOS-latest R 3.4)
         run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "error", check_dir = "check")
         shell: Rscript {0}
 

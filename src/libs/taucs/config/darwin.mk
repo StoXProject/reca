@@ -9,7 +9,7 @@ PATHSEP=/
 DEFFLG=-D
 
 #CC        = gcc
-CFLAGS    = -O3 -faltivec
+CFLAGS    = -O3 -faltivec -Wno-implicit-function-declaration
 COUTFLG   = -o ./
 
 FC        = $(CC)
