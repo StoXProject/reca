@@ -71,7 +71,7 @@ jobs:
           r-version: ${{ matrix.config.r }}
           rtools-version: ${{ matrix.config.rtools }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
-          
+
       - name: setup R
         if: (runner.os != 'macOS' || matrix.config.r != '4.3')
         uses: r-lib/actions/setup-r@v2
