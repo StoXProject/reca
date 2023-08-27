@@ -8,7 +8,7 @@ F2CEXT=.c
 PATHSEP=/
 DEFFLG=-D
 
-CFLAGS    = -O2 -Wall $(OPT_FLAGS) -Wno-implicit-function-declaration
+CFLAGS    = -O2 -Wall $(OPT_FLAGS)
 COUTFLG   = -o ./
 
 FC        = $(CC)
