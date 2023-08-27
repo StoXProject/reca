@@ -27,7 +27,9 @@ jobs:
           - {os: macOS-latest,   r: '4.3', pkgext: '.tgz'}
           - {os: macOS-latest,   r: 'next',  pkgext: '.tgz'}
           
-          - {os: windows-latest, r: '3.6',  pkgext: '.zip'}
+          # issues with openblas comp with 3.6 on windows.
+          #- {os: windows-latest, r: '3.6',  pkgext: '.zip'}
+          
           - {os: windows-latest, r: '4.0',  pkgext: '.zip'}
           - {os: windows-latest, r: '4.1',  pkgext: '.zip'}
           - {os: windows-latest, r: '4.2',  pkgext: '.zip'}
