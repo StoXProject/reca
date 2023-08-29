@@ -10,7 +10,7 @@ BIN    = .
 CC     = gcc
 LD     = $(CC)
 FC     = gfortran
-CFLAGS = $(CFLAGS) -Wno-implicit-function-declaration
+CFLAGS = -Wno-implicit-function-declaration
 
 # F2C lib for OSX
 F2C =
