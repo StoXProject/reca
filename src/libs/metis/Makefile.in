@@ -6,7 +6,7 @@
 OPTFLAGS = -O2 
 
 # What options to be used by the compiler
-COPTIONS = 
+COPTIONS = -Wno-error-implicit-function-declaration 
 
 # What options to be used by the loader
 LDOPTIONS = 
