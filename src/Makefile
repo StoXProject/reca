@@ -2,7 +2,7 @@ DEBUG_CFLAGS =
 ECA_CFLAGS = $(DEBUG_CFLAGS) -g -O3 $(INCLUDE)
 
 LIB    = -lpthread -lm
-LFLAGS = -static-libgcc \
+LFLAGS = \
 	$(LIBTAUCS) $(LIBMETIS) $(LIBBLAS) \
 	$(or $(wildcard $(shell gcc -print-file-name=libgfortran.a))  ,-lgfortran) \
 	$(or $(wildcard $(shell gcc -print-file-name=libquadmath.a))  ,-lquadmath)
