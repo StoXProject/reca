@@ -99,6 +99,7 @@ jobs:
           remotes::install_cran("rcmdcheck")
           remotes::install_cran("git2r")
           remotes::install_cran("drat")
+          remotes::install_cran("curl")
         shell: Rscript {0}
 
       - name: Session info
