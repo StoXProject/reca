@@ -29,11 +29,11 @@ jobs:
           #- {os: windows-latest, r: '4.0',  pkgext: '.zip'}
           #- {os: windows-latest, r: '4.1',  pkgext: '.zip'}
           #- {os: windows-latest, r: '4.2',  pkgext: '.zip'}
-          #- {os: windows-latest, r: '4.3', pkgext: '.zip'}
+          - {os: windows-latest, r: '4.3', pkgext: '.zip'}
           #- {os: windows-latest, r: 'next',  pkgext: '.zip'}
           
           #- {os: ubuntu-20.04,   r: '4.2', pkgext: '.tar.gz', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
-          #- {os: ubuntu-20.04,   r: '4.3', pkgext: '.tar.gz', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
+          - {os: ubuntu-20.04,   r: '4.3', pkgext: '.tar.gz', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
           #- {os: ubuntu-20.04,   r: 'next',  pkgext: '.tar.gz', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
 
     env:
